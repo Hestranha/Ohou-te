@@ -4,27 +4,78 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style-estetica.css" />
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js"></script>
-    <title>Bolas con Física</title>
+      <link rel="stylesheet" href="animate.min.css">
+    <title>ohoroteo</title>
   </head>
   <body>
+    <h2 class="titulo-sorteo">Ohoroteo</h2>
+    <p class="titulo-sub">¡Crea y comienza tu suerte con posibilidades infinitas!</p>
     <div class="bolas-container">
-      <div class="datos">
-        <label for="numBolas">Número de Bolas:</label>
-        <input
-          type="number"
-          id="numBolas"
-          placeholder="Ingrese la cantidad"
-          value="50"
-        />
-        <button onclick="crearBolas()">Crear Bolas</button>
-        <button onclick="girar()">girar</button>
-        <button onclick="contar();update()">contar</button>
+      <div class="container-izquierda">
+        <div class="container">
+          <div class="datos">
+            <label for="numBolas">Posibilidades</label>
+            <textarea oninput="numFilas(this.value); limitarCaracteres(this, 60);" id="numBolas" rows="50"></textarea>
+            <div class="entradas">
+              <label for="posibilidades-totales">Entradas</label>
+              <input type="text" id="posibilidades-totales" value="10" readonly/>
+            </div>
+          </div>
+          <!-- <div class="datos r">
+            <label for="resultados">Resultados</label>
+            <textarea id="resultados" readonly></textarea>
+          </div> -->
+          <div class="container-botones-ajustes">
+            <div class="container-opciones">
+              <label>Opciones</label>
+              <div class="opciones-especificas">
+                <div class="container-uno-por-uno">
+                  <label class="sub-opcion" for="velocidad">Velocidad</label>
+                  <select id="velocidad">
+                    <option value="normal">Normal</option>
+                    <option value="rapido">Rápido</option>
+                  </select>
+                </div>
+                <div class="container-uno-por-uno">
+                  <label class="sub-opcion" for="duracion">Duración</label>
+                  <select id="duracion">
+                    <option value="3">3s.</option>
+                    <option value="4">4s.</option>
+                    <option value="5">5s.</option>
+                  </select>
+                </div>
+                <div class="container-uno-por-uno">
+                  <div class="sonido-forma">
+                    <label class="cl-checkbox">
+                      <input checked="checked" type="checkbox">
+                      <span></span>
+                    </label>
+                  </div>
+                  <label class="sub-opcion s" for="sonido">Sonido</label>
+                </div>
+              </div>
+            </div>
+            <div class="botones xd">
+              <button class="cB" onclick="crearBolas()">Crear<span></span></button>
+              <button class="g" onclick="girar()">Comenzar<span></span></button>
+            </div>
+          </div>
+        </div>
+        <div class="container-2">
+
+        </div>
+        
+      </div>
+      <div class="caja-bolas">
         <div id="bolas"></div>
       </div>
     </div>
-
+    <footer>
+      <p>Creado por hestranho © 2024</p>
+    </footer>
     <script src="script.js"></script>
   </body>
 </html>

@@ -1,3 +1,54 @@
+/**********************************************************/
+/**********************************************************/
+/**********************************************************/
+function agregarDatos() {
+    const numBolasInput = document.getElementById("numBolas");
+
+    const datos = [
+        "Opción 01",
+        "Opción 02",
+        "Opción 03",
+        "Opción 04",
+        "Opción 05",
+        "Opción 06",
+        "Opción 07",
+        "Opción 08",
+        "Opción 09",
+        "Opción 10"
+    ];
+    const datosSinEspacios = datos.map(dato => dato.trim());
+    numBolasInput.value = datosSinEspacios.join('\n');
+}
+
+agregarDatos();
+
+function limitarCaracteres(elemento, maxCaracteres) {
+    let lines = elemento.value.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].length > maxCaracteres) {
+            lines[i] = lines[i].substring(0, maxCaracteres);
+        }
+    }
+    elemento.value = lines.join('\n');
+}
+const agregarCeroIzquierda = numero => (numero < 10 ? "0" : "") + numero;
+function numFilas(valor) {
+    const posibilidadesTotalesInput = document.getElementById("posibilidades-totales");
+    const numBolasInput = document.getElementById("numBolas");
+    const contenidoNumBolas = numBolasInput.value;
+    const lineasNumBolas = contenidoNumBolas.split(/\r?\n/).filter(linea => linea.trim() !== '');
+    const numLineasNumBolas = lineasNumBolas.length;
+    const numLineasFormateado = agregarCeroIzquierda(numLineasNumBolas);
+
+    posibilidadesTotalesInput.value = numLineasFormateado;
+}
+
+/**********************************************************/
+/**********************************************************/
+/**********************************************************/
+/**********************************************************/
+/**********************************************************/
+/**********************************************************/
 const { Engine, Render, Bodies, World, Body, Events } = Matter;
 
 let engine;
@@ -9,14 +60,17 @@ function iniciarMatter() {
     world = engine.world;
 }
 
-
+crearBolas();
 function crearBolas() {
     const numBolasInput = document.getElementById("numBolas");
-    const numBolas = parseInt(numBolasInput.value);
+    const contenido = numBolasInput.value;
 
-    if (isNaN(numBolas) || numBolas <= 0) {
-        alert("Ingresa un número válido de bolas.");
-        return;
+    const lineas = contenido.split(/\r?\n/).filter(linea => linea.trim() !== '');
+
+    const numBolas = lineas.length;
+
+    if (numBolas === 0) {
+        alert("Ingresa al menos una línea de texto.");
     }
 
     const bolasContainer = document.getElementById("bolas");
@@ -43,7 +97,7 @@ function crearBolas() {
         World.add(world, bola);
 
         const texto = document.createElement('div');
-        texto.innerHTML = `${i + 1}`;
+        texto.innerHTML = agregarCeroIzquierda(i + 1);
         texto.style.position = 'absolute';
         texto.style.color = "#000000";
         bolasContainer.appendChild(texto);
@@ -57,6 +111,12 @@ function crearBolas() {
 
                 texto.style.left = `${posicion.x - anchoTexto / 2}px`;  // Centrar horizontalmente
                 texto.style.top = `${posicion.y - altoTexto / 2}px`;    // Centrar verticalmente
+
+                // Verificar si la bola está fuera del área visible
+                if (posicion.x < 0 || posicion.x > limiteX || posicion.y < 0 || posicion.y > limiteY) {
+                    // Reiniciar la posición de la bola si está fuera
+                    Body.setPosition(bola, { x: Math.random() * (limiteX - 40) + 20, y: Math.random() * (limiteY - 40) + 20 });
+                }
             }
         });
     }
@@ -84,6 +144,7 @@ function crearBolas() {
             width: limiteX,
             height: limiteY,
             wireframes: false,
+            background: '#fafffe',
         },
     });
 
@@ -116,7 +177,7 @@ function girar() {
         } else {
             clearInterval(intervalId);
         }
-    }, 10);
+    }, 1);
 }
 
 function applyRandomForce(body) {
