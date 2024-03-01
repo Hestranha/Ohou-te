@@ -30,7 +30,7 @@ function crearBolas() {
     for (let i = 0; i < numBolas; i++) {
         const x = Math.random() * (limiteX - 40) + 20;
         const y = Math.random() * (limiteY - 40) + 20;
-    
+
         const bola = Bodies.circle(x, y, 20, {
             restitution: 0.8,
             friction: 0.1,
@@ -39,22 +39,22 @@ function crearBolas() {
                 fillStyle: getRandomColor(),
             },
         });
-    
+
         World.add(world, bola);
-    
+
         const texto = document.createElement('div');
         texto.innerHTML = `${i + 1}`;
         texto.style.position = 'absolute';
         texto.style.color = "#000000";
         bolasContainer.appendChild(texto);
-    
+
         // Actualizar posición del texto en cada frame
         Events.on(engine, 'beforeUpdate', () => {
             if (bola) {
                 const posicion = bola.position;
                 const anchoTexto = texto.offsetWidth;
                 const altoTexto = texto.offsetHeight;
-    
+
                 texto.style.left = `${posicion.x - anchoTexto / 2}px`;  // Centrar horizontalmente
                 texto.style.top = `${posicion.y - altoTexto / 2}px`;    // Centrar verticalmente
             }
@@ -70,7 +70,7 @@ function crearBolas() {
         // Bodies.rectangle(limiteX / 2, limiteY / 2 - 100, 800, 10, { isStatic: true, restitution: 1 }),
         // Bodies.rectangle(limiteX / 2 - 30, limiteY / 2 - 70, 10, 40, { isStatic: true, restitution: 1 }),
         // Bodies.rectangle(limiteX / 2 + 30, limiteY / 2  - 70, 10, 40, { isStatic: true, restitution: 1 }),
-        
+
     ];
 
     World.add(world, paredes);
@@ -86,7 +86,7 @@ function crearBolas() {
             wireframes: false,
         },
     });
-    
+
     Render.run(render);
     Engine.run(engine);
 }
@@ -102,7 +102,7 @@ function getRandomColor() {
 
 function girar() {
     agitar = true;
-    
+
     setTimeout(() => {
         agitar = false;
     }, 3000);
