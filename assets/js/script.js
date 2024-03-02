@@ -17,27 +17,24 @@ function limitarLongitud() {
     // }
     input.max = entradas;
 }
-
-function agregarDatos() {
-    const numBolasInput = document.getElementById("numBolas");
-
-    const datos = [
-        "Opción 01",
-        "Opción 02",
-        "Opción 03",
-        "Opción 04",
-        "Opción 05",
-        "Opción 06",
-        "Opción 07",
-        "Opción 08",
-        "Opción 09",
-        "Opción 10"
-    ];
+const datos = [
+    "Opción 01",
+    "Opción 02",
+    "Opción 03",
+    "Opción 04",
+    "Opción 05",
+    "Opción 06",
+    "Opción 07",
+    "Opción 08",
+    "Opción 09",
+    "Opción 10"
+];
+agregarDatos(datos, "numBolas");
+function agregarDatos(datos, id) {
+    const numBolasInput = document.getElementById(id);
     const datosSinEspacios = datos.map(dato => dato.trim());
     numBolasInput.value = datosSinEspacios.join('\n');
 }
-
-agregarDatos();
 
 function limitarCaracteres(elemento, maxCaracteres, maxFilas) {
     let lines = elemento.value.split('\n');
@@ -201,11 +198,38 @@ function getRandomColor() {
 }
 
 function girar() {
+    if (window.matchMedia("(max-width: 768px)").matches) {
+        const alturaTotal = document.documentElement.scrollHeight;
+        window.scrollTo({
+            top: alturaTotal,
+            behavior: 'smooth'
+        });
+    }
     const bolaVelocidad = document.getElementById("velocidad").value;
     const bolaDuracion = document.getElementById("duracion").value * 1000;
     const bolaResultados = document.getElementById("numResultados").value;
     const bolaSonido = document.getElementById("sonido").checked;
-    console.log(bolaVelocidad, bolaDuracion, bolaResultados, bolaSonido);
+
+    var resultados1Element = document.getElementById("resultados1");
+    var resultados2Element = document.getElementById("resultados2");
+    var resultadosFinales = [];
+    resultados1Element.value = ""
+    resultados2Element.value = ""
+    for (var i = 0; i < bolaResultados; i++) {
+        resultadosFinales[i] = i + 1 + '.';
+    }
+    agregarDatos(resultadosFinales, "resultados1");
+    agregarDatos(resultadosFinales, "resultados2");
+    resultados1Element.addEventListener("keydown", function (event) {
+        event.preventDefault();
+    });
+
+    resultados2Element.addEventListener("keydown", function (event) {
+        event.preventDefault();
+    });
+
+
+    //console.log(bolaVelocidad, bolaDuracion, bolaResultados, bolaSonido);
     if (bolaVelocidad == 'normal') {
         numV = 0.2;
     } else if (bolaVelocidad == 'rapido') {
@@ -229,7 +253,7 @@ function girar() {
         audio.play();
         setTimeout(function () {
             audio.pause();
-        }, bolaDuracion+1600);
+        }, bolaDuracion + 1600);
     } else if (bolaSonido == false) {
         console.log('sin sonido :c');
     }
@@ -239,7 +263,7 @@ function girar() {
     setTimeout(() => {
         agitar = false;
     }, bolaDuracion);
-    
+
     const intervalId = setInterval(() => {
         if (agitar) {
             for (const body of world.bodies) {

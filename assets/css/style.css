@@ -279,7 +279,8 @@ footer {
 }
 
 #numBolas,
-#resultados {
+#resultados1,
+#resultados2 {
     font-size: 15px;
     height: 160px;
     overflow-y: auto;
@@ -296,28 +297,43 @@ footer {
     transition: 0.5s background-color ease-in-out, 0.5s border ease-in-out, 0.5s box-shadow ease-in-out;
 }
 
-#numBolas:focus,
-#resultados:focus {
+#numBolas:focus {
     background-color: #eefff6;
     border: 1px solid #09de7a;
     box-shadow: 0px 0px 3px #6f9289, 0px 0px 3px #6f9289;
     transition: 0.5s;
 }
-
-.r {
-    background-color: #01b862;
-    color: white;
+#r1{
+    display: flex;
+}
+#r2{
+    display: none;
+}
+.datos-resultados {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    height: auto;
+    gap: 10px;
+    border-radius: 5px;
+    font-size: 18px;
+    padding: 15px;
+    background-color: #3fb19e;
+    font-weight: bold;
+    color: rgb(0, 0, 0);
 }
 
-#resultados {
-    background: #b2ffda;
+#resultados1,
+#resultados2 {
+    background: #d4ffea;
     border: 1px solid #ffff;
 }
 
-#resultados:focus {
-    background-color: #2affbf;
-    border: 1px solid #09de97;
-    box-shadow: 0px 0px 3px #05907e, 0px 0px 3px #05907e;
+#resultados1:focus,
+#resultados2:focus {
+    background-color: #b0ffe7;
+    border: 1px solid #b0ffe7;
+    box-shadow: 0px 0px 1px #b0ffe7, 0px 0px 1px #b0ffe7;
     transition: 0.5s;
 }
 
@@ -414,5 +430,11 @@ footer {
         max-width: auto;
         /* transform-origin: top; */
     }
-
+    #r1{
+        display: none;
+    }
+    #r2{
+        display: flex;
+    }
+    
 }
