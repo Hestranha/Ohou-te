@@ -214,13 +214,13 @@ function girar() {
     if (bolaSonido == true) {
         switch (bolaDuracion) {
             case 3000:
-                var audio = new Audio('./audio/eee5.mp3');
+                var audio = new Audio('./assets/audio/eee3.mp3');
                 break;
             case 4000:
-                var audio = new Audio('./audio/eee6.mp3');
+                var audio = new Audio('./assets/audio/eee4.mp3');
                 break;
             case 5000:
-                var audio = new Audio('./audio/eee7.mp3');
+                var audio = new Audio('./assets/audio/eee5.mp3');
                 break;
             default:
                 console.error('No hay un caso para bolaSonido igual a', bolaSonido);
