@@ -143,9 +143,11 @@
     padding: 10px 25px;
     position: relative;
     overflow: hidden;
-    background-color: transparent;;
+    outline: none;
+    background-color: #ffffff23;
     text-align: center;
     text-transform: uppercase;
+    font-weight: bold;
     font-size: 16px;
     cursor: pointer;
     transition: .3s;
@@ -153,48 +155,29 @@
     border-radius: 10px;
 }
 .cB{
-    color: #ffffff;
-    border: 2px solid #ffffff;
+    color: #000000;
+    border: 1px solid #30968d;
     box-shadow: #000000 0px 2px 5px -1px, #000000 0px 1px 3px -1px;
 }
 .g{
-    color: #84ffef;
-    border: 2px solid #84ffef;
+    color: #000000;
+    border: 1px solid #002c28;
     box-shadow: #000000 0px 2px 5px -1px, #000000 0px 1px 3px -1px;
 }
-.xd button::before {
-    content: '';
-    width: 0;
-    height: 300%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(45deg);
-    
-    transition: .5s ease;
-    display: block;
-    z-index: -1;
+
+.xd .cB:hover{
+    color: rgb(255, 255, 255);
+    background-color: #30968d;
 }
 
-.xd button:hover::before {
-    width: 105%;
+.xd .g:hover{
+    color: rgb(255, 255, 255);
+    background-color: #002c28;
 }
 
-.xd button:hover {
-    color: #111;
-}
-
-.xd .cB::before{
-    background: #d6fffb;
-}
-
-.xd .g::before{
-    background: #3dffec;
-}
-
-.xd button:active::before {
+.xd button:active {
     color: white;
-    background: #00000046; /* Cambiar a fondo negro */
+    background-color: #000000;
 }
 
 /*****************************************************/

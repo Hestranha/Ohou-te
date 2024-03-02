@@ -1,6 +1,23 @@
 /**********************************************************/
 /**********************************************************/
 /**********************************************************/
+var entradas=10;
+function limitarLongitud() {
+    var input = document.getElementById("numResultados");
+    if (input.value.length > 2) {
+        input.value = input.value.slice(0, 2); // Limita la longitud a dos caracteres
+    }
+    if (input.value < 1) {
+        input.value = 1;
+    } else if (input.value > entradas) {
+        input.value = entradas;
+    }
+    // if (input.value.length < 2) {
+    //     input.value = "0" + input.value;
+    // }
+    input.max = entradas;
+}
+
 function agregarDatos() {
     const numBolasInput = document.getElementById("numBolas");
 
@@ -41,6 +58,12 @@ function numFilas(valor) {
     const numLineasFormateado = agregarCeroIzquierda(numLineasNumBolas);
 
     posibilidadesTotalesInput.value = numLineasFormateado;
+    entradas = numLineasFormateado;
+    var input = document.getElementById("numResultados");
+    input.value = 1;
+    // if (input.value.length < 2) {
+    //     input.value = "0" + input.value;
+    // }
 }
 
 /**********************************************************/
@@ -122,10 +145,10 @@ function crearBolas() {
     }
 
     const paredes = [
-        Bodies.rectangle(limiteX / 2, 0, limiteX, 50, { isStatic: true, restitution: 1, collisionFilter: { group: -1 } }), // Pared superior
-        Bodies.rectangle(limiteX / 2, limiteY, limiteX, 50, { isStatic: true, restitution: 1, collisionFilter: { group: -1 } }), // Pared inferior
-        Bodies.rectangle(0, limiteY / 2, 50, limiteY, { isStatic: true, restitution: 1, collisionFilter: { group: -1 } }), // Pared izquierda
-        Bodies.rectangle(limiteX, limiteY / 2, 50, limiteY, { isStatic: true, restitution: 1, collisionFilter: { group: -1 } }), // Pared derecha
+        Bodies.rectangle(limiteX / 2, 0, limiteX, 50, { isStatic: true, restitution: 1, collisionFilter: { group: -1 }, render: { fillStyle: '#04201e' } }), // Pared superior
+        Bodies.rectangle(limiteX / 2, limiteY, limiteX, 50, { isStatic: true, restitution: 1, collisionFilter: { group: -1 }, render: { fillStyle: '#04201e' } }), // Pared inferior
+        Bodies.rectangle(0, limiteY / 2, 50, limiteY, { isStatic: true, restitution: 1, collisionFilter: { group: -1 }, render: { fillStyle: '#04201e' } }), // Pared izquierda
+        Bodies.rectangle(limiteX, limiteY / 2, 50, limiteY, { isStatic: true, restitution: 1, collisionFilter: { group: -1 }, render: { fillStyle: '#04201e' } }), // Pared derecha
 
         // Bodies.rectangle(limiteX / 2, limiteY / 2 - 100, 800, 10, { isStatic: true, restitution: 1 }),
         // Bodies.rectangle(limiteX / 2 - 30, limiteY / 2 - 70, 10, 40, { isStatic: true, restitution: 1 }),

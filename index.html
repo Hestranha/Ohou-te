@@ -7,11 +7,10 @@
     <link rel="stylesheet" href="style-estetica.css" />
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js"></script>
-      <link rel="stylesheet" href="animate.min.css">
-    <title>ohoroteo</title>
+    <title>Ohou♣te</title>
   </head>
   <body>
-    <h2 class="titulo-sorteo">Ohoroteo</h2>
+    <h2 class="titulo-sorteo">Ohou♣te</h2>
     <p class="titulo-sub">¡Crea y comienza tu suerte con posibilidades infinitas!</p>
     <div class="bolas-container">
       <div class="container-izquierda">
@@ -48,6 +47,10 @@
                   </select>
                 </div>
                 <div class="container-uno-por-uno">
+                  <label class="sub-opcion iii">#Resultados</label>
+                  <input id="numResultados" type="number" maxlength="2" min="1" max="50" oninput="limitarLongitud();" value="1"/>
+                </div>
+                <div class="container-uno-por-uno">
                   <div class="sonido-forma">
                     <label class="cl-checkbox">
                       <input checked="checked" type="checkbox">
@@ -69,9 +72,12 @@
         </div>
         
       </div>
-      <div class="caja-bolas">
-        <div id="bolas"></div>
+      <div class="container-derecha">
+        <div class="caja-bolas">
+          <div id="bolas"></div>
+        </div>
       </div>
+      
     </div>
     <footer>
       <p>Creado por hestranho © 2024</p>
