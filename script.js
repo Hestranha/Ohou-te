@@ -1,7 +1,7 @@
 /**********************************************************/
 /**********************************************************/
 /**********************************************************/
-var entradas=10;
+var entradas = 10;
 function limitarLongitud() {
     var input = document.getElementById("numResultados");
     if (input.value.length > 2) {
@@ -39,8 +39,11 @@ function agregarDatos() {
 
 agregarDatos();
 
-function limitarCaracteres(elemento, maxCaracteres) {
+function limitarCaracteres(elemento, maxCaracteres, maxFilas) {
     let lines = elemento.value.split('\n');
+    if (lines.length > maxFilas) {
+        lines = lines.slice(0, maxFilas);
+    }
     for (let i = 0; i < lines.length; i++) {
         if (lines[i].length > maxCaracteres) {
             lines[i] = lines[i].substring(0, maxCaracteres);
@@ -48,6 +51,7 @@ function limitarCaracteres(elemento, maxCaracteres) {
     }
     elemento.value = lines.join('\n');
 }
+
 const agregarCeroIzquierda = numero => (numero < 10 ? "0" : "") + numero;
 function numFilas(valor) {
     const posibilidadesTotalesInput = document.getElementById("posibilidades-totales");
@@ -142,6 +146,18 @@ function crearBolas() {
                 }
             }
         });
+        /*
+        Events.on(engine, 'collisionStart', (event) => {
+            const pairs = event.pairs;
+            for (const pair of pairs) {
+                const { bodyA, bodyB } = pair;
+                if (bodyA.label === 'Circle Body' && bodyB.label === 'Circle Body') {
+                    // Choque entre dos bolas, reproduce el sonido
+                    playCollisionSound();
+                }
+            }
+        });
+        */
     }
 
     const paredes = [
@@ -185,16 +201,50 @@ function getRandomColor() {
 }
 
 function girar() {
+    const bolaVelocidad = document.getElementById("velocidad").value;
+    const bolaDuracion = document.getElementById("duracion").value * 1000;
+    const bolaResultados = document.getElementById("numResultados").value;
+    const bolaSonido = document.getElementById("sonido").checked;
+    console.log(bolaVelocidad, bolaDuracion, bolaResultados, bolaSonido);
+    if (bolaVelocidad == 'normal') {
+        numV = 0.2;
+    } else if (bolaVelocidad == 'rapido') {
+        numV = 0.5;
+    }
+    if (bolaSonido == true) {
+        switch (bolaDuracion) {
+            case 3000:
+                var audio = new Audio('./audio/eee5.mp3');
+                break;
+            case 4000:
+                var audio = new Audio('./audio/eee6.mp3');
+                break;
+            case 5000:
+                var audio = new Audio('./audio/eee7.mp3');
+                break;
+            default:
+                console.error('No hay un caso para bolaSonido igual a', bolaSonido);
+        }
+        audio.volume = 0.2;
+        audio.play();
+        setTimeout(function () {
+            audio.pause();
+        }, bolaDuracion+1600);
+    } else if (bolaSonido == false) {
+        console.log('sin sonido :c');
+    }
+
     agitar = true;
 
     setTimeout(() => {
         agitar = false;
-    }, 3000);
+    }, bolaDuracion);
+    
     const intervalId = setInterval(() => {
         if (agitar) {
             for (const body of world.bodies) {
                 if (body.label === 'Circle Body') {
-                    applyRandomForce(body);
+                    applyRandomForce(body, numV);
                 }
             }
         } else {
@@ -203,8 +253,21 @@ function girar() {
     }, 1);
 }
 
-function applyRandomForce(body) {
-    const fuerzaX = (Math.random() - 0.5) * 0.2;
-    const fuerzaY = (Math.random() - 0.5) * 0.2;
+function applyRandomForce(body, num) {
+    const fuerzaX = (Math.random() - 0.5) * num;
+    const fuerzaY = (Math.random() - 0.5) * num;
     Body.applyForce(body, body.position, { x: fuerzaX, y: fuerzaY });
 }
+/*
+function playCollisionSound() {
+    const collisionSound = new Audio('./audio/colision2.mp3');
+    collisionSound.volume = 0.2;
+    if (collisionSound.paused) {
+        // Iniciar la reproducción
+        collisionSound.play();
+    } else {
+        // Reiniciar la reproducción desde el principio si ya está en reproducción
+        collisionSound.currentTime = 0;
+    }
+}
+*/

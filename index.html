@@ -17,7 +17,7 @@
         <div class="container">
           <div class="datos">
             <label for="numBolas">Posibilidades</label>
-            <textarea oninput="numFilas(this.value); limitarCaracteres(this, 60);" id="numBolas" rows="50"></textarea>
+            <textarea oninput="limitarCaracteres(this, 60,50);numFilas(this.value);" id="numBolas"></textarea>
             <div class="entradas">
               <label for="posibilidades-totales">Entradas</label>
               <input type="text" id="posibilidades-totales" value="10" readonly/>
@@ -53,7 +53,7 @@
                 <div class="container-uno-por-uno">
                   <div class="sonido-forma">
                     <label class="cl-checkbox">
-                      <input checked="checked" type="checkbox">
+                      <input id="sonido" checked="checked" type="checkbox">
                       <span></span>
                     </label>
                   </div>
