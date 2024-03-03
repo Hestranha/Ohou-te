@@ -12,9 +12,6 @@ function limitarLongitud() {
     } else if (input.value > entradas) {
         input.value = entradas;
     }
-    // if (input.value.length < 2) {
-    //     input.value = "0" + input.value;
-    // }
     input.max = entradas;
 }
 const datos = [
@@ -59,9 +56,9 @@ function numFilas(valor) {
     const numLineasFormateado = agregarCeroIzquierda(numLineasNumBolas);
 
     posibilidadesTotalesInput.value = numLineasFormateado;
-    entradas = numLineasFormateado;
+    entradas = numLineasNumBolas;
     var input = document.getElementById("numResultados");
-    input.value = 1;
+    input.value = entradas;
     // if (input.value.length < 2) {
     //     input.value = "0" + input.value;
     // }
@@ -96,7 +93,7 @@ function crearBolas() {
     document.querySelector('.g').disabled = false;
     var resultados1Element = document.getElementById("resultados1");
     var resultados2Element = document.getElementById("resultados2");
-    bolaResultados = document.getElementById("numResultados").value; // Para detener toda la wea xd
+    
     resultados1Element.value = "" // Limpiamos el contenido
     resultados2Element.value = "" // Limpiamos el contenido
     ayuda = true;
@@ -128,7 +125,7 @@ function crearBolas() {
         const y = limiteY / 2 - aparecerAltura + Math.random() * 80;
 
         const bola = Bodies.circle(x, y, 20, {
-            restitution: 0.9,
+            restitution: 0.8,
             friction: 0.1,
             label: 'Circle Body',
             render: {
@@ -187,20 +184,20 @@ function crearBolas() {
         */
     }
 
-    const grosorParedes = 60;
+    const grosorParedes = 80;
     const paredes = [
         Bodies.rectangle(limiteX / 2, 0, limiteX, grosorParedes, {
             isStatic: true,
             restitution: 1,
             render: { fillStyle: '#04201e' }
         }), // Pared superior
-        Bodies.rectangle(limiteX / 4, limiteY, limiteX / 2 - 60, grosorParedes, {
+        Bodies.rectangle(limiteX / 4, limiteY, limiteX / 2 - 80, grosorParedes, {
             isStatic: true,
             restitution: 1,
             render: { fillStyle: '#04201e' }
         }), // Pared inferior izquierda
 
-        Bodies.rectangle((3 * limiteX) / 4, limiteY, limiteX / 2 - 60, grosorParedes, {
+        Bodies.rectangle((3 * limiteX) / 4, limiteY, limiteX / 2 - 80, grosorParedes, {
             isStatic: true,
             restitution: 1,
             render: { fillStyle: '#04201e' }
@@ -240,36 +237,36 @@ var rampa, cuadradoAbajo;
 function contexto() {
     const x = 600, y = 600;
     rampa = [
-        Bodies.rectangle(x / 2 - 163, y / 2 + 203, 270, 20, {
+        Bodies.rectangle(x / 2 - 173, y / 2 + 203, 270, 20, {
             isStatic: true,
             restitution: 1,
             angle: Math.PI / 11,
             render: { fillStyle: '#04201e' }
         }),
-        Bodies.rectangle(x / 2 + 163, y / 2 + 203, 270, 20, {
+        Bodies.rectangle(x / 2 + 173, y / 2 + 203, 270, 20, {
             isStatic: true,
             restitution: 1,
             angle: -Math.PI / 11,
             render: { fillStyle: '#04201e' }
         }),
-        Bodies.rectangle(x / 2 + 165, y / 2 + 254, 270, 45, {
+        Bodies.rectangle(x / 2 + 175, y / 2 + 254, 270, 45, {
             isStatic: true,
             restitution: 1,
             render: { fillStyle: '#04201e' }
         }),
-        Bodies.rectangle(x / 2 - 165, y / 2 + 254, 270, 45, {
+        Bodies.rectangle(x / 2 - 175, y / 2 + 254, 270, 45, {
             isStatic: true,
             restitution: 1,
             render: { fillStyle: '#04201e' }
         }),
-        Bodies.polygon(x / 2 + 250, y / 2 + 220, 3, 40, {
+        Bodies.polygon(x / 2 + 270, y / 2 + 220, 3, 40, {
             isStatic: true,
             restitution: 1,
             angle: Math.PI / 2,
             render: { fillStyle: '#04201e' },
             vertices: [{ x: 20, y: 250 }, { x: -100, y: -100 }, { x: 50, y: -50 }]
         }),
-        Bodies.polygon(x / 2 - 250, y / 2 + 215, 3, 50, {
+        Bodies.polygon(x / 2 - 270, y / 2 + 215, 3, 50, {
             isStatic: true,
             restitution: 1,
             angle: -Math.PI / 2,
@@ -304,6 +301,7 @@ function getRandomColor() {
 
 function comenzar() {
     generarCuadrado();
+    
     ordenBolas = []; // lipiamos
     contenidoOpciones = []; // lipiamos
     if (window.matchMedia("(max-width: 768px)").matches) {
@@ -323,23 +321,24 @@ function comenzar() {
 
     console.log(contenidoOpciones);
 
+    bolaResultados = document.getElementById("numResultados").value; // Para detener toda la wea xd
     const bolaVelocidad = document.getElementById("velocidad").value;
     const bolaDuracion = document.getElementById("duracion").value * 1000;
     const bolaSonido = document.getElementById("sonido").checked;
 
-    engine.timing.timeScale = 0.5; // Volverlo mas lento cuando gira
+    engine.timing.timeScale = 0.4; // Volverlo mas lento cuando gira
     setTimeout(() => {
         engine.timing.timeScale = 1; // Volverlo mas rapido cuando caen
-    }, bolaDuracion);
+    }, bolaDuracion + 700);
 
     setTimeout(() => {
         World.remove(world, cuadradoAbajo); // eliminar cuadrado que limmita
         configurarSensor(world); // agregar el sensor para eliminar y contar las bolas en orden
-    }, bolaDuracion + 500);
+    }, bolaDuracion + 700);
 
     //console.log(bolaVelocidad, bolaDuracion, bolaResultados, bolaSonido);
     if (bolaVelocidad == 'normal') {
-        numV = 0.2;
+        numV = 0.18;
     } else if (bolaVelocidad == 'rapido') {
         numV = 0.3;
     }
@@ -390,22 +389,26 @@ function comenzar() {
     console.log(bolaResultados);
     document.querySelector('.g').disabled = true;
 
-    intervalId2 = setInterval(() => {
-        const bolasEnElMundo = world.bodies.filter(body => body.label === 'Circle Body');
-        if ((bolasEnElMundo.length == (verificandoBolas - bolaResultados)) || (bolasEnElMundo.length === 0 && !ayuda2)) {
-            // 
-            if (bolasEnElMundo.length === 0) {
-                console.log("¡Todas las bolas han sido eliminadas!");
+    setTimeout(() => {
+        intervalId2 = setInterval(() => {
+            const bolasEnElMundo = world.bodies.filter(body => body.label === 'Circle Body');
+            if ((bolasEnElMundo.length == (verificandoBolas - bolaResultados)) || (bolasEnElMundo.length === 0 && !ayuda2)) {
+                // 
+                if (bolasEnElMundo.length === 0) {
+                    console.log("¡Todas las bolas han sido eliminadas!");
+                }
+                //console.log("Num de resultados: ", bolaResultados);
+                console.log(ordenBolas); // Bolas ordendas
+                ayuda2 = true;
+                obteniendoResultados();
+                clearInterval(intervalId2); // Detener el conteo de bolas
+            } else if (!ayuda2) {
+                console.log(`Quedan ${bolasEnElMundo.length} bolas en el mundo.`);
             }
-            //console.log("Num de resultados: ", bolaResultados);
-            console.log(ordenBolas); // Bolas ordendas
-            ayuda2 = true;
-            obteniendoResultados();
-            clearInterval(intervalId2); // Detener el conteo de bolas
-        } else if (!ayuda2) {
-            //console.log(`Quedan ${bolasEnElMundo.length} bolas en el mundo.`);
-        }
-    }, 1000); // Guardar bolas eliminadas tambien
+        }, 300); // Guardar bolas eliminadas tambien
+
+    }, bolaDuracion); 
+    
 }
 function obteniendoResultados() {
     const resultadosFinales = [];
@@ -453,7 +456,7 @@ function configurarSensor(world) {
     ayuda = false; // se acmbia a false para que no reposicione las bolas fuera del limite
     const limiteX = 600, limiteY = 600;
 
-    const sensor = Bodies.rectangle(limiteX / 2, limiteY, 60, 1, {
+    const sensor = Bodies.rectangle(limiteX / 2, limiteY, 80, 1, {
         isSensor: true,
         isStatic: true,
         render: { fillStyle: 'red' }
