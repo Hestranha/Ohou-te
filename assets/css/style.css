@@ -10,7 +10,7 @@ body {
     flex-direction: column;
     font-family: 'Courier New', Courier, monospace;
     background-image: url('../img/fondo.png');
-    background-attachment: fixed;
+    /*background-attachment: fixed;*/
     background-size: cover;
     background-position: center;
     overflow-x: hidden;
