@@ -1,0 +1,46 @@
+Bodies.polygon(limiteX / 2 - 163, limiteY / 2 + 240, 1, 40, {
+            isStatic: true,
+            restitution: 1,
+            // angle: Math.PI / 11,
+            render: { fillStyle: '#04201e' }
+        }),
+        Bodies.polygon(limiteX / 2 - 240, limiteY / 2 + 234, 1, 60, {
+            isStatic: true,
+            restitution: 1,
+            // angle: Math.PI / 11,
+            render: { fillStyle: '#04201e' }
+        }),
+        Bodies.polygon(limiteX / 2 + 163, limiteY / 2 + 240, 1, 40, {
+            isStatic: true,
+            restitution: 1,
+            // angle: Math.PI / 11,
+            render: { fillStyle: '#04201e' }
+        }),
+        Bodies.polygon(limiteX / 2 + 240, limiteY / 2 + 234, 1, 60, {
+            isStatic: true,
+            restitution: 1,
+            // angle: Math.PI / 11,
+            render: { fillStyle: '#04201e' }
+        }),
+        Bodies.rectangle(limiteX / 2 - 83, limiteY / 2 + 254, 125, 43, {
+            isStatic: true,
+            restitution: 1,
+            render: { fillStyle: '#04201e' }
+        }),
+        Bodies.rectangle(limiteX / 2 + 83, limiteY / 2 + 254, 126, 45, {
+            isStatic: true,
+            restitution: 1,
+            render: { fillStyle: '#04201e' }
+        }),
+        Bodies.polygon(limiteX / 2 + 113, limiteY / 2 + 234, 3, 26, {
+            isStatic: true,
+            restitution: 1,
+            angle: Math.PI / 16,
+            render: { fillStyle: '#04201e' }
+        }),
+        Bodies.polygon(limiteX / 2 - 110, limiteY / 2 + 238, 3, 26, {
+            isStatic: true,
+            restitution: 1,
+            angle: Math.PI / 4,
+            render: { fillStyle: '#04201e' }
+        }),

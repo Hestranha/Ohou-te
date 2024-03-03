@@ -77,15 +77,27 @@ const { Engine, Render, Bodies, World, Body, Events } = Matter;
 
 let engine;
 let world;
-let agitar = false;
-
+let agitar = false; // nos ayuda a saber si debemos agitar las bolas
+ // ayuda = condicionamos para que las bolas puedan salirse de los "limites" -
+ // - (no se salen pero es una forma de decirlo)
+ // ayuda2 = ayuda a detener la verificacion de conteo de bolas
+let ayuda, ayuda2; 
 function iniciarMatter() {
     engine = Engine.create();
     world = engine.world;
 }
 
 crearBolas();
+var ordenBolas=[]; // tenemos el orden de bolas que cayeron
+var intervalId2; // va con ayuda2, sirve para contar en tiempo real las bolas
 function crearBolas() {
+    ayuda = true;
+    if(!ayuda2){
+        clearInterval(intervalId2);
+    } else {
+        ayuda2 = true
+    }
+
     const numBolasInput = document.getElementById("numBolas");
     const contenido = numBolasInput.value;
 
@@ -106,8 +118,9 @@ function crearBolas() {
     const limiteY = 600;
 
     for (let i = 0; i < numBolas; i++) {
+        const aparecerAltura = 250;
         const x = Math.random() * (limiteX - 40) + 20;
-        const y = Math.random() * (limiteY - 40) + 20;
+        const y = limiteY / 2 - aparecerAltura + Math.random() * 80;
 
         const bola = Bodies.circle(x, y, 20, {
             restitution: 0.8,
@@ -115,13 +128,16 @@ function crearBolas() {
             label: 'Circle Body',
             render: {
                 fillStyle: getRandomColor(),
+                text: {
+                    content: `${i + 1}`, // agregamos para saber el orden de las bolas
+                },
             },
         });
 
         World.add(world, bola);
 
         const texto = document.createElement('div');
-        texto.innerHTML = agregarCeroIzquierda(i + 1);
+        texto.innerHTML = `${i + 1}`;
         texto.style.position = 'absolute';
         texto.style.color = "#000000";
         bolasContainer.appendChild(texto);
@@ -135,11 +151,20 @@ function crearBolas() {
 
                 texto.style.left = `${posicion.x - anchoTexto / 2}px`;  // Centrar horizontalmente
                 texto.style.top = `${posicion.y - altoTexto / 2}px`;    // Centrar verticalmente
-
-                // Verificar si la bola está fuera del área visible
-                if (posicion.x < 0 || posicion.x > limiteX || posicion.y < 0 || posicion.y > limiteY) {
-                    // Reiniciar la posición de la bola si está fuera
-                    Body.setPosition(bola, { x: Math.random() * (limiteX - 40) + 20, y: Math.random() * (limiteY - 40) + 20 });
+                if (ayuda) {
+                    const posicion = bola.position;
+                    if (posicion.x < 0 || posicion.x > limiteX || posicion.y < 0 || posicion.y > 579) {
+                        // Reiniciar la posición de la bola si está fuera
+                        Body.setPosition(bola, { x: Math.random() * (limiteX - 40) + 20, y });
+                    }
+                } else {
+                    const posicion = bola.position;
+                    //console.log(posicion.x, limiteX, posicion.y, limiteY);
+                    if (posicion.y > 579) {
+                        // Reiniciar la posición de la bola si está fuera
+                        //ordenBolas.push(texto.innerHTML);
+                        texto.innerHTML = "";
+                    }
                 }
             }
         });
@@ -157,21 +182,39 @@ function crearBolas() {
         */
     }
 
+    const grosorParedes = 60;
     const paredes = [
-        Bodies.rectangle(limiteX / 2, 0, limiteX, 50, { isStatic: true, restitution: 1, collisionFilter: { group: -1 }, render: { fillStyle: '#04201e' } }), // Pared superior
-        Bodies.rectangle(limiteX / 2, limiteY, limiteX, 50, { isStatic: true, restitution: 1, collisionFilter: { group: -1 }, render: { fillStyle: '#04201e' } }), // Pared inferior
-        Bodies.rectangle(0, limiteY / 2, 50, limiteY, { isStatic: true, restitution: 1, collisionFilter: { group: -1 }, render: { fillStyle: '#04201e' } }), // Pared izquierda
-        Bodies.rectangle(limiteX, limiteY / 2, 50, limiteY, { isStatic: true, restitution: 1, collisionFilter: { group: -1 }, render: { fillStyle: '#04201e' } }), // Pared derecha
+        Bodies.rectangle(limiteX / 2, 0, limiteX, grosorParedes, {
+            isStatic: true,
+            restitution: 1,
+            render: { fillStyle: '#04201e' }
+        }), // Pared superior
+        Bodies.rectangle(limiteX / 4, limiteY, limiteX / 2 - 60, grosorParedes, {
+            isStatic: true,
+            restitution: 1,
+            render: { fillStyle: '#04201e' }
+        }), // Pared inferior izquierda
 
-        // Bodies.rectangle(limiteX / 2, limiteY / 2 - 100, 800, 10, { isStatic: true, restitution: 1 }),
-        // Bodies.rectangle(limiteX / 2 - 30, limiteY / 2 - 70, 10, 40, { isStatic: true, restitution: 1 }),
-        // Bodies.rectangle(limiteX / 2 + 30, limiteY / 2  - 70, 10, 40, { isStatic: true, restitution: 1 }),
-
+        Bodies.rectangle((3 * limiteX) / 4, limiteY, limiteX / 2 - 60, grosorParedes, {
+            isStatic: true,
+            restitution: 1,
+            render: { fillStyle: '#04201e' }
+        }), // Pared inferior dereha
+        Bodies.rectangle(0, limiteY / 2, grosorParedes, limiteY, {
+            isStatic: true,
+            restitution: 1,
+            render: { fillStyle: '#04201e' }
+        }), // Pared izquierda
+        Bodies.rectangle(limiteX, limiteY / 2, grosorParedes, limiteY, {
+            isStatic: true,
+            restitution: 1,
+            render: { fillStyle: '#04201e' }
+        }), // Pared derecha
     ];
+    contexto();
 
     World.add(world, paredes);
-
-    engine.timing.timeScale = 0.5;
+    //engine.timing.timeScale = 0.5;
 
     const render = Render.create({
         element: bolasContainer,
@@ -188,6 +231,62 @@ function crearBolas() {
     Engine.run(engine);
 }
 
+var rampa, cuadradoAbajo;
+function contexto() {
+    const x = 600, y = 600;
+    rampa = [
+        Bodies.rectangle(x / 2 - 163, y / 2 + 203, 270, 20, {
+            isStatic: true,
+            restitution: 1,
+            angle: Math.PI / 11,
+            render: { fillStyle: '#04201e' }
+        }),
+        Bodies.rectangle(x / 2 + 163, y / 2 + 203, 270, 20, {
+            isStatic: true,
+            restitution: 1,
+            angle: -Math.PI / 11,
+            render: { fillStyle: '#04201e' }
+        }),
+        Bodies.rectangle(x / 2 + 165, y / 2 + 254, 270, 45, {
+            isStatic: true,
+            restitution: 1,
+            render: { fillStyle: '#04201e' }
+        }),
+        Bodies.rectangle(x / 2 - 165, y / 2 + 254, 270, 45, {
+            isStatic: true,
+            restitution: 1,
+            render: { fillStyle: '#04201e' }
+        }),
+        Bodies.polygon(x / 2 + 250, y / 2 + 220, 3, 40, {
+            isStatic: true,
+            restitution: 1,
+            angle: Math.PI / 2,
+            render: { fillStyle: '#04201e' },
+            vertices: [{ x: 20, y: 250 }, { x: -100, y: -100 }, { x: 50, y: -50 }]
+        }),
+        Bodies.polygon(x / 2 - 250, y / 2 + 215, 3, 50, {
+            isStatic: true,
+            restitution: 1,
+            angle: -Math.PI / 2,
+            render: { fillStyle: '#04201e' },
+            vertices: [{ x: -20, y: 250 }, { x: 100, y: -100 }, { x: -50, y: -50 }]
+        }),
+    ];
+    World.add(world, rampa);
+    //World.remove(world, partesJuego1);//no se puede borrar porque todavia no ha sido definido
+}
+function generarCuadrado() {
+    const x = 600, y = 600;
+    cuadradoAbajo =
+        Bodies.rectangle(x / 2, y / 2 + 266, 600, 69, {
+            isStatic: true,
+            restitution: 1,
+            render: { fillStyle: '#04201e' },
+            //render: { fillStyle: 'red' },
+        });
+    World.add(world, cuadradoAbajo);
+    //World.remove(world, juego1_1);
+}
 function getRandomColor() {
     var r = Math.floor(Math.random() * 100) + 155;
     var g = Math.floor(Math.random() * 100) + 155;
@@ -197,7 +296,9 @@ function getRandomColor() {
     return colorHex;
 }
 
-function girar() {
+function comenzar() {
+    generarCuadrado();
+    ordenBolas.splice(0, ordenBolas.length);
     if (window.matchMedia("(max-width: 768px)").matches) {
         const alturaTotal = document.documentElement.scrollHeight;
         window.scrollTo({
@@ -215,6 +316,8 @@ function girar() {
     var resultadosFinales = [];
     resultados1Element.value = ""
     resultados2Element.value = ""
+    resultados1Element.readOnly = false;
+    resultados2Element.readOnly = false;
     for (var i = 0; i < bolaResultados; i++) {
         resultadosFinales[i] = i + 1 + '.';
     }
@@ -228,13 +331,23 @@ function girar() {
         event.preventDefault();
     });
 
+    engine.timing.timeScale = 0.5; // Volverlo mas lento cuando gira
+    setTimeout(() => {
+        engine.timing.timeScale = 1; // Volverlo mas rapido cuando caen
+    }, bolaDuracion);
+
+    setTimeout(() => {
+        World.remove(world, cuadradoAbajo); // eliminar cuadrado que limmita
+        configurarSensor(world); // agregar el sensor para eliminar y contar las bolas en orden
+    }, bolaDuracion + 500);
 
     //console.log(bolaVelocidad, bolaDuracion, bolaResultados, bolaSonido);
     if (bolaVelocidad == 'normal') {
         numV = 0.2;
     } else if (bolaVelocidad == 'rapido') {
-        numV = 0.5;
+        numV = 0.3;
     }
+
     if (bolaSonido == true) {
         switch (bolaDuracion) {
             case 3000:
@@ -262,6 +375,7 @@ function girar() {
 
     setTimeout(() => {
         agitar = false;
+
     }, bolaDuracion);
 
     const intervalId = setInterval(() => {
@@ -275,6 +389,66 @@ function girar() {
             clearInterval(intervalId);
         }
     }, 1);
+
+    intervalId2 = setInterval(() => {
+        verificarBolasEliminadas(world, intervalId2); // Contar bolas en tiempo real
+    }, 1000); // Guardar bolas eliminadas tambien
+}
+
+// Función para configurar el sensor
+function configurarSensor(world) {
+    ayuda = false; // se acmbia a false para que no reposicione las bolas fuera del limite
+    ayuda2 = false; // ayuda para que podamos cancelar el setInterval cuando se da click en crear
+    const limiteX = 600, limiteY = 600;
+
+    const sensor = Bodies.rectangle(limiteX / 2, limiteY, 60, 1, {
+        isSensor: true,
+        isStatic: true,
+        render: { fillStyle: 'red' }
+    });
+
+    World.add(world, sensor);
+
+    Events.on(engine, 'collisionStart', (event) => {
+        const pairs = event.pairs;
+        for (let i = 0; i < pairs.length; i++) {
+            const pair = pairs[i];
+            if (pair.bodyA === sensor && pair.bodyB.label === 'Circle Body') {
+                const textoBola = pair.bodyB.render.text.content;
+                ordenBolas.push(textoBola);
+                eliminarBola(world, pair.bodyB);
+            } else if (pair.bodyB === sensor && pair.bodyA.label === 'Circle Body') {
+                const textoBola = pair.bodyA.render.text.content;
+                ordenBolas.push(textoBola);
+                eliminarBola(world, pair.bodyA);
+            }
+        }
+    });
+}
+
+function eliminarBola(world, bola) {
+    const textoAsociado = bola.render.text;
+    if (textoAsociado) {
+        World.remove(world, textoAsociado);
+    }
+    World.remove(world, bola);
+    World.remove(world, bola);
+}
+
+function verificarBolasEliminadas(world, intervalId) {
+    const bolasEnElMundo = world.bodies.filter(body => body.label === 'Circle Body');
+
+    if (bolasEnElMundo.length === 0) {
+        console.log("¡Todas las bolas han sido eliminadas!");
+        console.log(ordenBolas); // Bolas ordendas
+        clearInterval(intervalId); // Detener el conteo de bolas
+    } else {
+        //console.log(ordenBolas);
+        //const ultimaBola = bolasEnElMundo[bolasEnElMundo.length - 1];
+        //const posicionUltimaBola = ultimaBola.position;
+        console.log(`Quedan ${bolasEnElMundo.length} bolas en el mundo.`);
+        //console.log(`Queda una bola en el mundo en la posición: (${posicionUltimaBola.x}, ${posicionUltimaBola.y})`);
+    }
 }
 
 function applyRandomForce(body, num) {
