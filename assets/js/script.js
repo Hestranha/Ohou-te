@@ -78,26 +78,30 @@ const { Engine, Render, Bodies, World, Body, Events } = Matter;
 let engine;
 let world;
 let agitar = false; // nos ayuda a saber si debemos agitar las bolas
- // ayuda = condicionamos para que las bolas puedan salirse de los "limites" -
- // - (no se salen pero es una forma de decirlo)
- // ayuda2 = ayuda a detener la verificacion de conteo de bolas
-let ayuda, ayuda2; 
+// ayuda = condicionamos para que las bolas puedan salirse de los "limites" -
+// - (no se salen pero es una forma de decirlo)
+// ayuda2 = ayuda a detener la verificacion de conteo de bolas
+let ayuda, ayuda2;
 function iniciarMatter() {
     engine = Engine.create();
     world = engine.world;
 }
 
 crearBolas();
-var ordenBolas=[]; // tenemos el orden de bolas que cayeron
+var ordenBolas = []; // tenemos el orden de bolas que cayeron
 var intervalId2; // va con ayuda2, sirve para contar en tiempo real las bolas
+var contenidoOpciones = []; // contenido de las opciones
+var bolaResultados; // Numero de resultados que seleciona el usuario
 function crearBolas() {
+    var resultados1Element = document.getElementById("resultados1");
+    var resultados2Element = document.getElementById("resultados2");
+    bolaResultados = document.getElementById("numResultados").value; // Para detener toda la wea xd
+    resultados1Element.value = "" // Limpiamos el contenido
+    resultados2Element.value = "" // Limpiamos el contenido
     ayuda = true;
-    if(!ayuda2){
-        clearInterval(intervalId2);
-    } else {
-        ayuda2 = true
-    }
-
+    ayuda2 = true;
+    ordenBolas = [];
+    contenidoOpciones = [];
     const numBolasInput = document.getElementById("numBolas");
     const contenido = numBolasInput.value;
 
@@ -123,7 +127,7 @@ function crearBolas() {
         const y = limiteY / 2 - aparecerAltura + Math.random() * 80;
 
         const bola = Bodies.circle(x, y, 20, {
-            restitution: 0.8,
+            restitution: 0.9,
             friction: 0.1,
             label: 'Circle Body',
             render: {
@@ -296,9 +300,11 @@ function getRandomColor() {
     return colorHex;
 }
 
+
 function comenzar() {
     generarCuadrado();
-    ordenBolas.splice(0, ordenBolas.length);
+    ordenBolas = []; // lipiamos
+    contenidoOpciones = []; // lipiamos
     if (window.matchMedia("(max-width: 768px)").matches) {
         const alturaTotal = document.documentElement.scrollHeight;
         window.scrollTo({
@@ -306,30 +312,19 @@ function comenzar() {
             behavior: 'smooth'
         });
     }
+    const contenido = document.getElementById("numBolas").value; // Obtenemos el contenido de textarea opciones
+    const lineas = contenido.split('\n'); // Separamos por lineas contenido
+
+    lineas.forEach((linea, index) => {
+        const lineaId = index + 1;
+        contenidoOpciones.push({ id: lineaId.toString(), texto: linea.trim() }); // asignamos id unico y lo juntamos con el contenido
+    });
+
+    console.log(contenidoOpciones);
+
     const bolaVelocidad = document.getElementById("velocidad").value;
     const bolaDuracion = document.getElementById("duracion").value * 1000;
-    const bolaResultados = document.getElementById("numResultados").value;
     const bolaSonido = document.getElementById("sonido").checked;
-
-    var resultados1Element = document.getElementById("resultados1");
-    var resultados2Element = document.getElementById("resultados2");
-    var resultadosFinales = [];
-    resultados1Element.value = ""
-    resultados2Element.value = ""
-    resultados1Element.readOnly = false;
-    resultados2Element.readOnly = false;
-    for (var i = 0; i < bolaResultados; i++) {
-        resultadosFinales[i] = i + 1 + '.';
-    }
-    agregarDatos(resultadosFinales, "resultados1");
-    agregarDatos(resultadosFinales, "resultados2");
-    resultados1Element.addEventListener("keydown", function (event) {
-        event.preventDefault();
-    });
-
-    resultados2Element.addEventListener("keydown", function (event) {
-        event.preventDefault();
-    });
 
     engine.timing.timeScale = 0.5; // Volverlo mas lento cuando gira
     setTimeout(() => {
@@ -389,16 +384,70 @@ function comenzar() {
             clearInterval(intervalId);
         }
     }, 1);
-
+    ayuda2 = false;
+    const verificandoBolas = world.bodies.filter(body => body.label === 'Circle Body').length; // oobtenemos bolas totales
+    console.log(bolaResultados);
     intervalId2 = setInterval(() => {
-        verificarBolasEliminadas(world, intervalId2); // Contar bolas en tiempo real
+        const bolasEnElMundo = world.bodies.filter(body => body.label === 'Circle Body');
+        if ((bolasEnElMundo.length == (verificandoBolas - bolaResultados)) || (bolasEnElMundo.length === 0 && !ayuda2)) {
+            // 
+            if (bolasEnElMundo.length === 0) {
+                console.log("¡Todas las bolas han sido eliminadas!");
+            }
+            //console.log("Num de resultados: ", bolaResultados);
+            console.log(ordenBolas); // Bolas ordendas
+            ayuda2 = true;
+            obteniendoResultados();
+            clearInterval(intervalId2); // Detener el conteo de bolas
+        } else if (!ayuda2) {
+            //console.log(`Quedan ${bolasEnElMundo.length} bolas en el mundo.`);
+        }
     }, 1000); // Guardar bolas eliminadas tambien
+}
+function obteniendoResultados() {
+    const resultadosFinales = [];
+
+    // Verificar si ambos arrays tienen la misma longitud
+    if (ordenBolas.length >= bolaResultados) {
+        // Mapear el texto de contenidoOpciones según el orden de ordenBolas
+        ordenBolas.forEach(id => {
+            // Buscar el objeto en contenidoOpciones con el id correspondiente
+            const opcion = contenidoOpciones.find(opcion => opcion.id === id);
+
+            // Si se encuentra la opción, agregar su texto a resultadosFinales
+            if (opcion) {
+                resultadosFinales.push(opcion.texto);
+            }
+        });
+        var resultados1Element = document.getElementById("resultados1");
+        var resultados2Element = document.getElementById("resultados2");
+        var resultados = [];
+        resultados1Element.value = ""
+        resultados2Element.value = ""
+        resultados1Element.readOnly = false;
+        resultados2Element.readOnly = false;
+        for (var i = 0; i < bolaResultados; i++) {
+            resultados[i] = i + 1 + '. ' + resultadosFinales[i];
+        }
+        agregarDatos(resultados, "resultados1");
+        agregarDatos(resultados, "resultados2");
+        resultados1Element.addEventListener("keydown", function (event) {
+            event.preventDefault();
+        });
+
+        resultados2Element.addEventListener("keydown", function (event) {
+            event.preventDefault();
+        });
+        console.log(resultadosFinales);
+    } else {
+        console.error('Los arrays ordenBolas y contenidoOpciones deben tener la misma longitud.');
+    }
 }
 
 // Función para configurar el sensor
 function configurarSensor(world) {
+    ordenBolas = []; // limpiamos 
     ayuda = false; // se acmbia a false para que no reposicione las bolas fuera del limite
-    ayuda2 = false; // ayuda para que podamos cancelar el setInterval cuando se da click en crear
     const limiteX = 600, limiteY = 600;
 
     const sensor = Bodies.rectangle(limiteX / 2, limiteY, 60, 1, {
@@ -433,22 +482,6 @@ function eliminarBola(world, bola) {
     }
     World.remove(world, bola);
     World.remove(world, bola);
-}
-
-function verificarBolasEliminadas(world, intervalId) {
-    const bolasEnElMundo = world.bodies.filter(body => body.label === 'Circle Body');
-
-    if (bolasEnElMundo.length === 0) {
-        console.log("¡Todas las bolas han sido eliminadas!");
-        console.log(ordenBolas); // Bolas ordendas
-        clearInterval(intervalId); // Detener el conteo de bolas
-    } else {
-        //console.log(ordenBolas);
-        //const ultimaBola = bolasEnElMundo[bolasEnElMundo.length - 1];
-        //const posicionUltimaBola = ultimaBola.position;
-        console.log(`Quedan ${bolasEnElMundo.length} bolas en el mundo.`);
-        //console.log(`Queda una bola en el mundo en la posición: (${posicionUltimaBola.x}, ${posicionUltimaBola.y})`);
-    }
 }
 
 function applyRandomForce(body, num) {
