@@ -142,7 +142,7 @@ function crearBolas() {
         World.add(world, bola);
 
         const texto = document.createElement('div');
-        texto.innerHTML = `${i + 1}`;
+        texto.innerHTML = `<strong>${i + 1}<strong>`;
         texto.style.position = 'absolute';
         texto.style.color = "#000000";
         bolasContainer.appendChild(texto);
