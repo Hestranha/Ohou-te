@@ -93,6 +93,7 @@ var intervalId2; // va con ayuda2, sirve para contar en tiempo real las bolas
 var contenidoOpciones = []; // contenido de las opciones
 var bolaResultados; // Numero de resultados que seleciona el usuario
 function crearBolas() {
+    document.querySelector('.g').disabled = false;
     var resultados1Element = document.getElementById("resultados1");
     var resultados2Element = document.getElementById("resultados2");
     bolaResultados = document.getElementById("numResultados").value; // Para detener toda la wea xd
@@ -387,6 +388,8 @@ function comenzar() {
     ayuda2 = false;
     const verificandoBolas = world.bodies.filter(body => body.label === 'Circle Body').length; // oobtenemos bolas totales
     console.log(bolaResultados);
+    document.querySelector('.g').disabled = true;
+
     intervalId2 = setInterval(() => {
         const bolasEnElMundo = world.bodies.filter(body => body.label === 'Circle Body');
         if ((bolasEnElMundo.length == (verificandoBolas - bolaResultados)) || (bolasEnElMundo.length === 0 && !ayuda2)) {
