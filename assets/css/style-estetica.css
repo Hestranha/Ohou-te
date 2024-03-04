@@ -154,32 +154,35 @@
     z-index: 1;
     border-radius: 10px;
 }
-.cB{
+
+.cB {
     color: #000000;
     border: 1px solid #56ab9f;
     box-shadow: #000000 0px 2px 5px -1px, #000000 0px 1px 3px -1px;
 }
-.g{
+
+.g {
     color: #000000;
     border: 1px solid #002c28;
     box-shadow: #000000 0px 2px 5px -1px, #000000 0px 1px 3px -1px;
 }
 
-.xd .cB:hover{
+.xd .cB:hover {
     color: rgb(255, 255, 255);
     background-color: #56ab9f;
 }
 
-.xd .g:hover{
+.xd .g:hover {
     color: rgb(255, 255, 255);
     background-color: #002c28;
 }
-.xd .cB:active{
+
+.xd .cB:active {
     color: rgb(0, 0, 0);
     background-color: #ffffff;
 }
 
-.xd .g:active{
+.xd .g:active {
     color: rgb(0, 0, 0);
     background-color: #ffffff;
 }

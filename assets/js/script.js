@@ -89,11 +89,14 @@ var ordenBolas = []; // tenemos el orden de bolas que cayeron
 var intervalId2; // va con ayuda2, sirve para contar en tiempo real las bolas
 var contenidoOpciones = []; // contenido de las opciones
 var bolaResultados; // Numero de resultados que seleciona el usuario
+var borrarBolas = false; // Para empezar a borrar bolas si es que hay en el mundo
+var k = 0; // nos ayuda a asignar el orden de resultados al momento de eliminar la bola
 function crearBolas() {
+    container_confetti.remove();
     document.querySelector('.g').disabled = false;
     var resultados1Element = document.getElementById("resultados1");
     var resultados2Element = document.getElementById("resultados2");
-    
+
     resultados1Element.value = "" // Limpiamos el contenido
     resultados2Element.value = "" // Limpiamos el contenido
     ayuda = true;
@@ -110,7 +113,9 @@ function crearBolas() {
     if (numBolas === 0) {
         alert("Ingresa al menos una línea de texto.");
     }
-
+    if (borrarBolas) {
+        eliminarTodasLasBolas(world);
+    }
     const bolasContainer = document.getElementById("bolas");
     bolasContainer.innerHTML = "";
 
@@ -231,6 +236,19 @@ function crearBolas() {
 
     Render.run(render);
     Engine.run(engine);
+    borrarBolas = true;
+}
+
+function eliminarTodasLasBolas(world) {
+    const bolasEnElMundo = world.bodies.filter(body => body.label === 'Circle Body');
+
+    for (const bola of bolasEnElMundo) {
+        const textoAsociado = bola.render.text;
+        if (textoAsociado) {
+            World.remove(world, textoAsociado);
+        }
+        World.remove(world, bola);
+    }
 }
 
 var rampa, cuadradoAbajo;
@@ -301,7 +319,7 @@ function getRandomColor() {
 
 function comenzar() {
     generarCuadrado();
-    
+
     ordenBolas = []; // lipiamos
     contenidoOpciones = []; // lipiamos
     if (window.matchMedia("(max-width: 768px)").matches) {
@@ -326,15 +344,15 @@ function comenzar() {
     const bolaDuracion = document.getElementById("duracion").value * 1000;
     const bolaSonido = document.getElementById("sonido").checked;
 
-    engine.timing.timeScale = 0.4; // Volverlo mas lento cuando gira
+    engine.timing.timeScale = 0.35; // Volverlo mas lento cuando gira
     setTimeout(() => {
         engine.timing.timeScale = 1; // Volverlo mas rapido cuando caen
-    }, bolaDuracion + 700);
+    }, bolaDuracion - 1500);
 
     setTimeout(() => {
         World.remove(world, cuadradoAbajo); // eliminar cuadrado que limmita
         configurarSensor(world); // agregar el sensor para eliminar y contar las bolas en orden
-    }, bolaDuracion + 700);
+    }, bolaDuracion - 500);
 
     //console.log(bolaVelocidad, bolaDuracion, bolaResultados, bolaSonido);
     if (bolaVelocidad == 'normal') {
@@ -371,7 +389,7 @@ function comenzar() {
     setTimeout(() => {
         agitar = false;
 
-    }, bolaDuracion);
+    }, bolaDuracion - 2000);
 
     const intervalId = setInterval(() => {
         if (agitar) {
@@ -392,7 +410,8 @@ function comenzar() {
     setTimeout(() => {
         intervalId2 = setInterval(() => {
             const bolasEnElMundo = world.bodies.filter(body => body.label === 'Circle Body');
-            if ((bolasEnElMundo.length == (verificandoBolas - bolaResultados)) || (bolasEnElMundo.length === 0 && !ayuda2)) {
+            //console.log(verificandoBolas - bolaResultados);
+            if (((bolasEnElMundo.length == (verificandoBolas - bolaResultados)) || (bolasEnElMundo.length === 0)) && !ayuda2) {
                 // 
                 if (bolasEnElMundo.length === 0) {
                     console.log("¡Todas las bolas han sido eliminadas!");
@@ -401,14 +420,21 @@ function comenzar() {
                 console.log(ordenBolas); // Bolas ordendas
                 ayuda2 = true;
                 obteniendoResultados();
+                /*
+                if (window.innerWidth > 768) {
+                    fireworks(2, 300);
+                }
+                */
                 clearInterval(intervalId2); // Detener el conteo de bolas
             } else if (!ayuda2) {
                 console.log(`Quedan ${bolasEnElMundo.length} bolas en el mundo.`);
+            } else {
+                console.log('xd');
             }
         }, 300); // Guardar bolas eliminadas tambien
 
-    }, bolaDuracion); 
-    
+    }, bolaDuracion);
+
 }
 function obteniendoResultados() {
     const resultadosFinales = [];
@@ -428,15 +454,15 @@ function obteniendoResultados() {
         var resultados1Element = document.getElementById("resultados1");
         var resultados2Element = document.getElementById("resultados2");
         var resultados = [];
-        resultados1Element.value = ""
-        resultados2Element.value = ""
-        resultados1Element.readOnly = false;
-        resultados2Element.readOnly = false;
+        //resultados1Element.value = ""
+        //resultados2Element.value = ""
+        //resultados1Element.readOnly = false;
+        //resultados2Element.readOnly = false;
         for (var i = 0; i < bolaResultados; i++) {
             resultados[i] = i + 1 + '. ' + resultadosFinales[i];
         }
-        agregarDatos(resultados, "resultados1");
-        agregarDatos(resultados, "resultados2");
+        //agregarDatos(resultados, "resultados1");
+        //agregarDatos(resultados, "resultados2");
         resultados1Element.addEventListener("keydown", function (event) {
             event.preventDefault();
         });
@@ -463,17 +489,49 @@ function configurarSensor(world) {
     });
 
     World.add(world, sensor);
-
+    k = 0;
     Events.on(engine, 'collisionStart', (event) => {
         const pairs = event.pairs;
         for (let i = 0; i < pairs.length; i++) {
             const pair = pairs[i];
             if (pair.bodyA === sensor && pair.bodyB.label === 'Circle Body') {
                 const textoBola = pair.bodyB.render.text.content;
+                for (const opcion of contenidoOpciones) {
+                    if (textoBola === opcion.id) {
+                        //console.log(`Bola con ID ${textoBola} coincide con la opción ${opcion.texto}`);
+                        const resultados1Element = document.getElementById("resultados1");
+                        const resultados2Element = document.getElementById("resultados2");
+                        resultados1Element.readOnly = false;
+                        resultados2Element.readOnly = false;
+                        resultados1Element.value += `${k + 1}. ${opcion.texto} \r\n`;
+                        resultados2Element.value += `${k + 1}. ${opcion.texto} \r\n`;
+                        k = k + 1;
+                        //console.log(k);
+                    }
+                }
                 ordenBolas.push(textoBola);
                 eliminarBola(world, pair.bodyB);
             } else if (pair.bodyB === sensor && pair.bodyA.label === 'Circle Body') {
                 const textoBola = pair.bodyA.render.text.content;
+                for (const opcion of contenidoOpciones) {
+                    if (textoBola === opcion.id) {
+                        //console.log(`Bola con ID ${textoBola} coincide con la opción ${opcion.texto}`);
+                        const resultados1Element = document.getElementById("resultados1");
+                        const resultados2Element = document.getElementById("resultados2");
+                        resultados1Element.readOnly = false;
+                        resultados2Element.readOnly = false;
+                        resultados1Element.value += `${k + 1}. ${opcion.texto} \r\n`;
+                        resultados2Element.value += `${k + 1}. ${opcion.texto} \r\n`;
+                        resultados1Element.addEventListener("keydown", function (event) {
+                            event.preventDefault();
+                        });
+
+                        resultados2Element.addEventListener("keydown", function (event) {
+                            event.preventDefault();
+                        });
+                        k = k + 1;
+                    }
+                }
                 ordenBolas.push(textoBola);
                 eliminarBola(world, pair.bodyA);
             }
