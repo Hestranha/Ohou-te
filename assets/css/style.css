@@ -64,7 +64,6 @@ footer {
     padding: 0;
     letter-spacing: 10px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.445);
-    /* Agregar sombra al texto */
 }
 
 
@@ -116,11 +115,12 @@ footer {
     display: flex;
     width: auto;
     justify-content: flex-end;
+    flex-direction: column;
     gap: 20px;
     padding-right: 20px;
     /* background-color: rgb(255, 0, 0); */
     overflow: hidden;
-    flex-wrap: wrap; /* Asegurándose de que los elementos se envuelvan a la siguiente línea si no caben en una sola línea */
+    flex-wrap: wrap;
 }
 
 
@@ -275,7 +275,6 @@ footer {
     border-radius: 5px;
     font-size: 18px;
     padding: 15px;
-    /* Ajusta el espaciado interno según tus preferencias */
     /* box-shadow: 0 1px 4px rgb(0, 0, 0); */
 }
 
@@ -339,7 +338,7 @@ footer {
 }
 #resultados1::selection,
 #resultados2::selection {
-    background-color: rgba(5, 102, 102, 0.3); /* Cambia el color de fondo del texto seleccionado */
+    background-color: rgba(5, 102, 102, 0.3);
 }
 
 /*******************************************************/
@@ -386,6 +385,16 @@ footer {
 
 /*******************************************************/
 /*******************************************************/
+.container-izquierda-arriba{
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+}
+.container-izquierda-abajo{
+    justify-content: flex-end;
+    display: flex;
+    gap: 20px;
+}
 /*******************************************************/
 /*******************************************************/
 /*******************************************************/
@@ -428,10 +437,12 @@ footer {
 @media screen and (max-width: 768px) {
     .container{
         display: flex;
-        flex-direction: column;
         padding: 10px;
         margin: 0px;
         gap: 20px;
+    }
+    .container-izquierda-arriba{
+        flex-direction: column;
     }
     .titulo-sub{
         width: 80%;
@@ -464,10 +475,16 @@ footer {
         max-width: auto;
         /* transform-origin: top; */
     }
-    #r1{
+    .container-izquierda-abajo{
         display: none;
     }
     #r2{
+        display: flex;
+    }
+    .imagen{
+        display: none;
+    }
+    .aaAA{
         display: flex;
     }
     

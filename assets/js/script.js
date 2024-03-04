@@ -504,17 +504,17 @@ function comenzar() {
                     document.querySelector('.g').disabled = false;
                     var elemento = document.querySelector('.zoomResultado');
                     var elemento1 = document.querySelector('.zoomResultado1');
-                    elemento.style.transform = 'scale(1.003)';
-                    elemento.style.backgroundColor = '#04201e';
+                    // elemento.style.transform = 'scale(1.003)';
+                    elemento.style.backgroundColor = '#79ffe9';
                     elemento.style.color = 'white';
-                    elemento1.style.transform = 'scale(1.003)';
-                    elemento1.style.backgroundColor = '#04201e';
+                    // elemento1.style.transform = 'scale(1.003)';
+                    elemento1.style.backgroundColor = '#79ffe9';
                     elemento1.style.color = 'white';
                     setTimeout(function () {
-                        elemento.style.transform = 'scale(1)';
+                        // elemento.style.transform = 'scale(1)';
                         elemento.style.backgroundColor = '#3fb19e';
                         elemento.style.color = 'black';
-                        elemento1.style.transform = 'scale(1)';
+                        // elemento1.style.transform = 'scale(1)';
                         elemento1.style.backgroundColor = '#3fb19e';
                         elemento1.style.color = 'black';
                         document.querySelector('.Btn').disabled = false;

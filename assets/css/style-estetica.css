@@ -252,12 +252,12 @@
 
 .Btn:disabled .text{
     cursor: not-allowed;
-    color: rgb(189, 189, 189);
-    background: #178d79 !important; 
+    color: #62ccba;
+    background: #79ffe9 !important; 
 }
 
 .Btn:disabled .svgIcon{
     cursor: not-allowed;
-    background: #177767 !important; 
+    background: #4ecab6 !important; 
 }
 
