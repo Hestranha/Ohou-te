@@ -337,7 +337,7 @@ function comenzar() {
         contenidoOpciones.push({ id: lineaId.toString(), texto: linea.trim() }); // asignamos id unico y lo juntamos con el contenido
     });
 
-    console.log(contenidoOpciones);
+    //console.log(contenidoOpciones);
 
     bolaResultados = document.getElementById("numResultados").value; // Para detener toda la wea xd
     const bolaVelocidad = document.getElementById("velocidad").value;
@@ -404,22 +404,26 @@ function comenzar() {
     }, 1);
     ayuda2 = false;
     const verificandoBolas = world.bodies.filter(body => body.label === 'Circle Body').length; // oobtenemos bolas totales
-    console.log(bolaResultados);
+    //console.log(bolaResultados);
     document.querySelector('.g').disabled = true;
 
     setTimeout(() => {
         intervalId2 = setInterval(() => {
             const bolasEnElMundo = world.bodies.filter(body => body.label === 'Circle Body');
-            //console.log(verificandoBolas - bolaResultados);
+            //console.log(`Quedan ${bolasEnElMundo.length} aaaaaaaaaaaaaaaa.`);
+            //console.log(bolasEnElMundo.length, verificandoBolas - bolaResultados);
             if (((bolasEnElMundo.length == (verificandoBolas - bolaResultados)) || (bolasEnElMundo.length === 0)) && !ayuda2) {
                 // 
                 if (bolasEnElMundo.length === 0) {
                     console.log("¡Todas las bolas han sido eliminadas!");
+                } else {
+                    console.log("Bolas quedando", bolasEnElMundo.length);
                 }
                 //console.log("Num de resultados: ", bolaResultados);
-                console.log(ordenBolas); // Bolas ordendas
+                //console.log(ordenBolas); // Bolas ordendas
                 ayuda2 = true;
-                obteniendoResultados();
+                //obteniendoResultados();
+                //Activar lo de abajo si quieres fuegos artificales
                 /*
                 if (window.innerWidth > 768) {
                     fireworks(2, 300);
@@ -431,7 +435,7 @@ function comenzar() {
             } else {
                 console.log('xd');
             }
-        }, 300); // Guardar bolas eliminadas tambien
+        }, 20); // Guardar bolas eliminadas tambien
 
     }, bolaDuracion);
 
@@ -470,7 +474,7 @@ function obteniendoResultados() {
         resultados2Element.addEventListener("keydown", function (event) {
             event.preventDefault();
         });
-        console.log(resultadosFinales);
+        //console.log(resultadosFinales);
     } else {
         console.error('Los arrays ordenBolas y contenidoOpciones deben tener la misma longitud.');
     }
@@ -489,47 +493,35 @@ function configurarSensor(world) {
     });
 
     World.add(world, sensor);
-    k = 0;
+    k = 0; // ayuda a colocar indice antes de cada texto que se coloco en el contenido
+    var jeje=true; // ayuda a desactivar el seguir subiendo contenido en el textare en tiempo real
+    const jeje2 = world.bodies.filter(body => body.label === 'Circle Body').length; 
+    // jeje2 -> fijo para medir si las bolas pasaron el limite
     Events.on(engine, 'collisionStart', (event) => {
         const pairs = event.pairs;
+        const bolasEnElMundoXD = world.bodies.filter(body => body.label === 'Circle Body').length;
+        //console.log('sipapi', bolasEnElMundoXD);
+        if(bolasEnElMundoXD == jeje2-bolaResultados){
+            jeje=false;
+        }
         for (let i = 0; i < pairs.length; i++) {
             const pair = pairs[i];
-            if (pair.bodyA === sensor && pair.bodyB.label === 'Circle Body') {
-                const textoBola = pair.bodyB.render.text.content;
-                for (const opcion of contenidoOpciones) {
-                    if (textoBola === opcion.id) {
-                        //console.log(`Bola con ID ${textoBola} coincide con la opción ${opcion.texto}`);
-                        const resultados1Element = document.getElementById("resultados1");
-                        const resultados2Element = document.getElementById("resultados2");
-                        resultados1Element.readOnly = false;
-                        resultados2Element.readOnly = false;
-                        resultados1Element.value += `${k + 1}. ${opcion.texto} \r\n`;
-                        resultados2Element.value += `${k + 1}. ${opcion.texto} \r\n`;
-                        k = k + 1;
-                        //console.log(k);
-                    }
-                }
-                ordenBolas.push(textoBola);
-                eliminarBola(world, pair.bodyB);
-            } else if (pair.bodyB === sensor && pair.bodyA.label === 'Circle Body') {
+            if ((pair.bodyB === sensor && pair.bodyA.label === 'Circle Body') || (pair.bodyA === sensor && pair.bodyB.label === 'Circle Body')) {
                 const textoBola = pair.bodyA.render.text.content;
-                for (const opcion of contenidoOpciones) {
-                    if (textoBola === opcion.id) {
-                        //console.log(`Bola con ID ${textoBola} coincide con la opción ${opcion.texto}`);
-                        const resultados1Element = document.getElementById("resultados1");
-                        const resultados2Element = document.getElementById("resultados2");
-                        resultados1Element.readOnly = false;
-                        resultados2Element.readOnly = false;
-                        resultados1Element.value += `${k + 1}. ${opcion.texto} \r\n`;
-                        resultados2Element.value += `${k + 1}. ${opcion.texto} \r\n`;
-                        resultados1Element.addEventListener("keydown", function (event) {
-                            event.preventDefault();
-                        });
-
-                        resultados2Element.addEventListener("keydown", function (event) {
-                            event.preventDefault();
-                        });
-                        k = k + 1;
+                if(jeje){
+                    for (const opcion of contenidoOpciones) {
+                        if (textoBola === opcion.id) {
+                            //console.log(`Bola con ID ${textoBola} coincide con la opción ${opcion.texto}`);
+                            //console.log('bbbbbbbbbbbbbbb');
+                            const resultados1Element = document.getElementById("resultados1");
+                            const resultados2Element = document.getElementById("resultados2");
+                            resultados1Element.readOnly = false;
+                            resultados2Element.readOnly = false;
+                            //console.log(k+1, bolaResultados);
+                            resultados1Element.value += `${k + 1}. ${opcion.texto} \r\n`;
+                            resultados2Element.value += `${k + 1}. ${opcion.texto} \r\n`;
+                            k = k + 1;
+                        }
                     }
                 }
                 ordenBolas.push(textoBola);
