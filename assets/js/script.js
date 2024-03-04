@@ -109,6 +109,10 @@ var bolaResultados; // Numero de resultados que seleciona el usuario
 var borrarBolas = false; // Para empezar a borrar bolas si es que hay en el mundo
 var k = 0; // nos ayuda a asignar el orden de resultados al momento de eliminar la bola
 function crearBolas() {
+    //Copiar texto
+    document.querySelector('.boton2Copiar').disabled = true;
+    document.querySelector('.Btn').disabled = true;
+
     container_confetti.remove();
     ayuda3 = false;
     document.querySelector('.g').disabled = false;
@@ -334,7 +338,34 @@ function getRandomColor() {
     return colorHex;
 }
 
-
+function changeIcon() {
+    var resultTextarea1 = document.getElementById('resultados1');
+    resultTextarea1.select();
+    document.execCommand('copy');
+    //var texto1Element = document.getElementById('copiado1');
+    //texto1Element.innerText = 'Copiado';
+    window.getSelection().removeAllRanges();
+    var iconContainer = document.getElementById('iconContainer');
+    iconContainer.innerHTML = '<svg fill="white" viewBox="0 0 512 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm124.1 191.1L207.3 380.8c-4.686 4.686-12.28 4.686-16.97 0L131.9 324.9c-4.686-4.686-4.686-12.28 0-16.97 4.686-4.686 12.28-4.686 16.97 0l46.04 46.04 134.5-134.5c4.686-4.686 12.28-4.686 16.97 0 4.686 4.686 4.686 12.28 0 16.97z"></path></svg>';
+    setTimeout(function () {
+        iconContainer.innerHTML = '<svg fill="white" viewBox="0 0 384 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path></svg>';
+        //texto1Element.innerText = 'Copiar';
+    }, 2500);
+}
+function changeIcon1() {
+    var resultTextarea1 = document.getElementById('resultados2');
+    resultTextarea1.select();
+    document.execCommand('copy');
+    //var texto1Element = document.getElementById('copiado2');
+    //texto1Element.innerText = 'Copiado';
+    window.getSelection().removeAllRanges();
+    var iconContainer = document.getElementById('iconContainer1');
+    iconContainer.innerHTML = '<svg fill="white" viewBox="0 0 512 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm124.1 191.1L207.3 380.8c-4.686 4.686-12.28 4.686-16.97 0L131.9 324.9c-4.686-4.686-4.686-12.28 0-16.97 4.686-4.686 12.28-4.686 16.97 0l46.04 46.04 134.5-134.5c4.686-4.686 12.28-4.686 16.97 0 4.686 4.686 4.686 12.28 0 16.97z"></path></svg>';
+    setTimeout(function () {
+        iconContainer.innerHTML = '<svg fill="white" viewBox="0 0 384 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path></svg>';
+        //texto1Element.innerText = 'Copiar';
+    }, 2500);
+}
 function comenzar() {
     crearBolas();
     document.querySelector('.g').disabled = true;
@@ -455,13 +486,22 @@ function comenzar() {
                     */
                     document.querySelector('.g').disabled = false;
                     var elemento = document.querySelector('.zoomResultado');
+                    var elemento1 = document.querySelector('.zoomResultado1');
                     elemento.style.transform = 'scale(1.003)';
                     elemento.style.backgroundColor  = '#04201e';
                     elemento.style.color  = 'white';
+                    elemento1.style.transform = 'scale(1.003)';
+                    elemento1.style.backgroundColor  = '#04201e';
+                    elemento1.style.color  = 'white';
                     setTimeout(function () {
                         elemento.style.transform = 'scale(1)';
                         elemento.style.backgroundColor  = '#3fb19e';
                         elemento.style.color  = 'black';
+                        elemento1.style.transform = 'scale(1)';
+                        elemento1.style.backgroundColor  = '#3fb19e';
+                        elemento1.style.color  = 'black';
+                        document.querySelector('.Btn').disabled = false;
+                        document.querySelector('.boton2Copiar').disabled = false;
                     }, 1000);
                     clearInterval(intervalId2); // Detener el conteo de bolas
                 } else if (!ayuda2) {
@@ -571,6 +611,13 @@ function configurarSensor(world) {
                             setTimeout(function () {
                                 audio2.pause();
                             }, 500);
+                            function preventDefaultActions(event) {
+                                event.preventDefault();
+                            }
+                            resultados1Element.addEventListener("keydown", preventDefaultActions);
+                            resultados1Element.addEventListener("dragover", preventDefaultActions);
+                            resultados2Element.addEventListener("keydown", preventDefaultActions);
+                            resultados2Element.addEventListener("dragover", preventDefaultActions);
                         }
                     }
                 }
