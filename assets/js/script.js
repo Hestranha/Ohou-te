@@ -62,6 +62,23 @@ function numFilas(valor) {
     // if (input.value.length < 2) {
     //     input.value = "0" + input.value;
     // }
+    //actualizarBolasEnTiempoReal();
+}
+function actualizarBolasEnTiempoReal() {
+    const numBolasInput = document.getElementById("numBolas");
+    const nuevoValor = parseInt(numBolasInput.value);
+
+    // Verificar si el valor de entradas ha cambiado
+    if (nuevoValor !== entradas) {
+        // Actualizar el valor de entradas
+        entradas = nuevoValor;
+
+        // Eliminar las bolas existentes
+        eliminarTodasLasBolas(world);
+
+        // Crear nuevas bolas con el nuevo número
+        crearBolas();
+    }
 }
 
 /**********************************************************/
@@ -78,7 +95,7 @@ let agitar = false; // nos ayuda a saber si debemos agitar las bolas
 // ayuda = condicionamos para que las bolas puedan salirse de los "limites" -
 // - (no se salen pero es una forma de decirlo)
 // ayuda2 = ayuda a detener la verificacion de conteo de bolas
-let ayuda, ayuda2;
+let ayuda, ayuda2, ayuda3 = true; // ayuda3 = ayuda a detener la verificacion de conteo de bolas
 function iniciarMatter() {
     engine = Engine.create();
     world = engine.world;
@@ -93,6 +110,7 @@ var borrarBolas = false; // Para empezar a borrar bolas si es que hay en el mund
 var k = 0; // nos ayuda a asignar el orden de resultados al momento de eliminar la bola
 function crearBolas() {
     container_confetti.remove();
+    ayuda3 = false;
     document.querySelector('.g').disabled = false;
     var resultados1Element = document.getElementById("resultados1");
     var resultados2Element = document.getElementById("resultados2");
@@ -318,126 +336,148 @@ function getRandomColor() {
 
 
 function comenzar() {
-    generarCuadrado();
-
-    ordenBolas = []; // lipiamos
-    contenidoOpciones = []; // lipiamos
-    if (window.matchMedia("(max-width: 768px)").matches) {
-        const alturaTotal = document.documentElement.scrollHeight;
-        window.scrollTo({
-            top: alturaTotal,
-            behavior: 'smooth'
-        });
-    }
-    const contenido = document.getElementById("numBolas").value; // Obtenemos el contenido de textarea opciones
-    const lineas = contenido.split('\n'); // Separamos por lineas contenido
-
-    lineas.forEach((linea, index) => {
-        const lineaId = index + 1;
-        contenidoOpciones.push({ id: lineaId.toString(), texto: linea.trim() }); // asignamos id unico y lo juntamos con el contenido
-    });
-
-    //console.log(contenidoOpciones);
-
-    bolaResultados = document.getElementById("numResultados").value; // Para detener toda la wea xd
-    const bolaVelocidad = document.getElementById("velocidad").value;
-    const bolaDuracion = document.getElementById("duracion").value * 1000;
-    const bolaSonido = document.getElementById("sonido").checked;
-
-    engine.timing.timeScale = 0.35; // Volverlo mas lento cuando gira
-    setTimeout(() => {
-        engine.timing.timeScale = 1; // Volverlo mas rapido cuando caen
-    }, bolaDuracion - 1500);
-
-    setTimeout(() => {
-        World.remove(world, cuadradoAbajo); // eliminar cuadrado que limmita
-        configurarSensor(world); // agregar el sensor para eliminar y contar las bolas en orden
-    }, bolaDuracion - 500);
-
-    //console.log(bolaVelocidad, bolaDuracion, bolaResultados, bolaSonido);
-    if (bolaVelocidad == 'normal') {
-        numV = 0.18;
-    } else if (bolaVelocidad == 'rapido') {
-        numV = 0.3;
-    }
-
-    if (bolaSonido == true) {
-        switch (bolaDuracion) {
-            case 3000:
-                var audio = new Audio('./assets/audio/eee3.mp3');
-                break;
-            case 4000:
-                var audio = new Audio('./assets/audio/eee4.mp3');
-                break;
-            case 5000:
-                var audio = new Audio('./assets/audio/eee5.mp3');
-                break;
-            default:
-                console.error('No hay un caso para bolaSonido igual a', bolaSonido);
-        }
-        audio.volume = 0.2;
-        audio.play();
-        setTimeout(function () {
-            audio.pause();
-        }, bolaDuracion + 1600);
-    } else if (bolaSonido == false) {
-        console.log('sin sonido :c');
-    }
-
-    agitar = true;
-
-    setTimeout(() => {
-        agitar = false;
-
-    }, bolaDuracion - 2000);
-
-    const intervalId = setInterval(() => {
-        if (agitar) {
-            for (const body of world.bodies) {
-                if (body.label === 'Circle Body') {
-                    applyRandomForce(body, numV);
-                }
-            }
-        } else {
-            clearInterval(intervalId);
-        }
-    }, 1);
-    ayuda2 = false;
-    const verificandoBolas = world.bodies.filter(body => body.label === 'Circle Body').length; // oobtenemos bolas totales
-    //console.log(bolaResultados);
+    crearBolas();
     document.querySelector('.g').disabled = true;
-
+    document.querySelector('.cB').disabled = true;
     setTimeout(() => {
-        intervalId2 = setInterval(() => {
-            const bolasEnElMundo = world.bodies.filter(body => body.label === 'Circle Body');
-            //console.log(`Quedan ${bolasEnElMundo.length} aaaaaaaaaaaaaaaa.`);
-            //console.log(bolasEnElMundo.length, verificandoBolas - bolaResultados);
-            if (((bolasEnElMundo.length == (verificandoBolas - bolaResultados)) || (bolasEnElMundo.length === 0)) && !ayuda2) {
-                // 
-                if (bolasEnElMundo.length === 0) {
-                    console.log("¡Todas las bolas han sido eliminadas!");
-                } else {
-                    console.log("Bolas quedando", bolasEnElMundo.length);
-                }
-                //console.log("Num de resultados: ", bolaResultados);
-                //console.log(ordenBolas); // Bolas ordendas
-                ayuda2 = true;
-                //obteniendoResultados();
-                //Activar lo de abajo si quieres fuegos artificales
-                /*
-                if (window.innerWidth > 768) {
-                    fireworks(2, 300);
-                }
-                */
-                clearInterval(intervalId2); // Detener el conteo de bolas
-            } else if (!ayuda2) {
-                console.log(`Quedan ${bolasEnElMundo.length} bolas en el mundo.`);
-            } else {
-                console.log('xd');
-            }
-        }, 20); // Guardar bolas eliminadas tambien
+        document.querySelector('.cB').disabled = false;
+    }, 2000);
+    setTimeout(() => {
+        generarCuadrado();
 
-    }, bolaDuracion);
+        ordenBolas = []; // lipiamos
+        contenidoOpciones = []; // lipiamos
+        if (window.matchMedia("(max-width: 768px)").matches) {
+            const alturaTotal = document.documentElement.scrollHeight;
+            window.scrollTo({
+                top: alturaTotal,
+                behavior: 'smooth'
+            });
+        }
+        const contenido = document.getElementById("numBolas").value; // Obtenemos el contenido de textarea opciones
+        const lineas = contenido.split('\n'); // Separamos por lineas contenido
+
+        lineas.forEach((linea, index) => {
+            const lineaId = index + 1;
+            contenidoOpciones.push({ id: lineaId.toString(), texto: linea.trim() }); // asignamos id unico y lo juntamos con el contenido
+        });
+
+        //console.log(contenidoOpciones);
+
+        bolaResultados = document.getElementById("numResultados").value; // Para detener toda la wea xd
+        const bolaVelocidad = document.getElementById("velocidad").value;
+        const bolaDuracion = document.getElementById("duracion").value * 1000;
+        const bolaSonido = document.getElementById("sonido").checked;
+
+        engine.timing.timeScale = 0.35; // Volverlo mas lento cuando gira
+        setTimeout(() => {
+            engine.timing.timeScale = 1; // Volverlo mas rapido cuando caen
+        }, bolaDuracion - 1500);
+
+        setTimeout(() => {
+            World.remove(world, cuadradoAbajo); // eliminar cuadrado que limmita
+            configurarSensor(world); // agregar el sensor para eliminar y contar las bolas en orden
+        }, bolaDuracion - 500);
+
+        //console.log(bolaVelocidad, bolaDuracion, bolaResultados, bolaSonido);
+        if (bolaVelocidad == 'normal') {
+            numV = 0.18;
+        } else if (bolaVelocidad == 'rapido') {
+            numV = 0.3;
+        }
+
+        if (bolaSonido == true) {
+            switch (bolaDuracion) {
+                case 3000:
+                    var audio = new Audio('./assets/audio/eee3.mp3');
+                    break;
+                case 4000:
+                    var audio = new Audio('./assets/audio/eee4.mp3');
+                    break;
+                case 5000:
+                    var audio = new Audio('./assets/audio/eee5.mp3');
+                    break;
+                default:
+                    console.error('No hay un caso para bolaSonido igual a', bolaSonido);
+            }
+            audio.volume = 0.2;
+            audio.play();
+            setTimeout(function () {
+                audio.pause();
+            }, bolaDuracion + 2000);
+        } else if (bolaSonido == false) {
+            console.log('sin sonido :c');
+        }
+
+        agitar = true;
+
+        setTimeout(() => {
+            agitar = false;
+
+        }, bolaDuracion - 2000);
+
+        const intervalId = setInterval(() => {
+            if (agitar) {
+                for (const body of world.bodies) {
+                    if (body.label === 'Circle Body') {
+                        applyRandomForce(body, numV);
+                    }
+                }
+            } else {
+                clearInterval(intervalId);
+            }
+        }, 1);
+        ayuda2 = false;
+        const verificandoBolas = world.bodies.filter(body => body.label === 'Circle Body').length; // oobtenemos bolas totales
+        //console.log(bolaResultados);
+
+        setTimeout(() => {
+            intervalId2 = setInterval(() => {
+                const bolasEnElMundo = world.bodies.filter(body => body.label === 'Circle Body');
+                //console.log(`Quedan ${bolasEnElMundo.length} aaaaaaaaaaaaaaaa.`);
+                //console.log(bolasEnElMundo.length, verificandoBolas - bolaResultados);
+                if (((bolasEnElMundo.length == (verificandoBolas - bolaResultados)) || (bolasEnElMundo.length === 0)) && !ayuda2) {
+                    // 
+                    if (bolasEnElMundo.length === 0) {
+                        console.log("¡Todas las bolas han sido eliminadas!");
+                    } else {
+                        console.log("Bolas quedando", bolasEnElMundo.length);
+                    }
+                    //console.log("Num de resultados: ", bolaResultados);
+                    //console.log(ordenBolas); // Bolas ordendas
+                    ayuda2 = true;
+                    //obteniendoResultados();
+                    //Activar lo de abajo si quieres fuegos artificales
+                    /*
+                    if (window.innerWidth > 768) {
+                        fireworks(2, 300);
+                    }
+                    */
+                    document.querySelector('.g').disabled = false;
+                    var elemento = document.querySelector('.zoomResultado');
+                    elemento.style.transform = 'scale(1.003)';
+                    elemento.style.backgroundColor  = '#04201e';
+                    elemento.style.color  = 'white';
+                    setTimeout(function () {
+                        elemento.style.transform = 'scale(1)';
+                        elemento.style.backgroundColor  = '#3fb19e';
+                        elemento.style.color  = 'black';
+                    }, 1000);
+                    clearInterval(intervalId2); // Detener el conteo de bolas
+                } else if (!ayuda2) {
+                    console.log(`Quedan ${bolasEnElMundo.length} bolas en el mundo.`);
+                } else {
+                    console.log('xd');
+                    if (!ayuda3) {
+                        clearInterval(intervalId2);
+                        ayuda3 = true;
+                    }
+                }
+            }, 20); // Guardar bolas eliminadas tambien
+
+        }, bolaDuracion);
+    }, 500);
+
 
 }
 function obteniendoResultados() {
@@ -494,21 +534,21 @@ function configurarSensor(world) {
 
     World.add(world, sensor);
     k = 0; // ayuda a colocar indice antes de cada texto que se coloco en el contenido
-    var jeje=true; // ayuda a desactivar el seguir subiendo contenido en el textare en tiempo real
-    const jeje2 = world.bodies.filter(body => body.label === 'Circle Body').length; 
+    var jeje = true; // ayuda a desactivar el seguir subiendo contenido en el textare en tiempo real
+    const jeje2 = world.bodies.filter(body => body.label === 'Circle Body').length;
     // jeje2 -> fijo para medir si las bolas pasaron el limite
     Events.on(engine, 'collisionStart', (event) => {
         const pairs = event.pairs;
         const bolasEnElMundoXD = world.bodies.filter(body => body.label === 'Circle Body').length;
         //console.log('sipapi', bolasEnElMundoXD);
-        if(bolasEnElMundoXD == jeje2-bolaResultados){
-            jeje=false;
+        if (bolasEnElMundoXD == jeje2 - bolaResultados) {
+            jeje = false;
         }
         for (let i = 0; i < pairs.length; i++) {
             const pair = pairs[i];
             if ((pair.bodyB === sensor && pair.bodyA.label === 'Circle Body') || (pair.bodyA === sensor && pair.bodyB.label === 'Circle Body')) {
                 const textoBola = pair.bodyA.render.text.content;
-                if(jeje){
+                if (jeje) {
                     for (const opcion of contenidoOpciones) {
                         if (textoBola === opcion.id) {
                             //console.log(`Bola con ID ${textoBola} coincide con la opción ${opcion.texto}`);
@@ -518,9 +558,19 @@ function configurarSensor(world) {
                             resultados1Element.readOnly = false;
                             resultados2Element.readOnly = false;
                             //console.log(k+1, bolaResultados);
-                            resultados1Element.value += `${k + 1}. ${opcion.texto} \r\n`;
-                            resultados2Element.value += `${k + 1}. ${opcion.texto} \r\n`;
+                            resultados1Element.value += `${k + 1}. ${opcion.texto}`;
+                            resultados2Element.value += `${k + 1}. ${opcion.texto}`;
+                            if (k < bolaResultados - 1) {
+                                resultados1Element.value += `\r\n`;
+                                resultados2Element.value += `\r\n`;
+                            }
                             k = k + 1;
+                            var audio2 = new Audio("./assets/audio/finPop.mp3");
+                            audio2.play();
+                            audio2.volume = 0.2;
+                            setTimeout(function () {
+                                audio2.pause();
+                            }, 500);
                         }
                     }
                 }
@@ -536,7 +586,6 @@ function eliminarBola(world, bola) {
     if (textoAsociado) {
         World.remove(world, textoAsociado);
     }
-    World.remove(world, bola);
     World.remove(world, bola);
 }
 
