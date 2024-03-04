@@ -108,6 +108,7 @@ var contenidoOpciones = []; // contenido de las opciones
 var bolaResultados; // Numero de resultados que seleciona el usuario
 var borrarBolas = false; // Para empezar a borrar bolas si es que hay en el mundo
 var k = 0; // nos ayuda a asignar el orden de resultados al momento de eliminar la bola
+var moverBolasConMouse = false;
 function crearBolas() {
     //Copiar texto
     document.querySelector('.boton2Copiar').disabled = true;
@@ -171,7 +172,14 @@ function crearBolas() {
         texto.style.color = "#000000";
         bolasContainer.appendChild(texto);
 
-        // Actualizar posición del texto en cada frame
+
+        texto.addEventListener('mouseover', () => {
+            if (moverBolasConMouse) {
+                moverBola(bola);
+            }
+        });
+
+
         Events.on(engine, 'beforeUpdate', () => {
             if (bola) {
                 const posicion = bola.position;
@@ -259,6 +267,15 @@ function crearBolas() {
     Render.run(render);
     Engine.run(engine);
     borrarBolas = true;
+}
+function activarMovimiento() {
+    console.log("click papi");
+    moverBolasConMouse = !moverBolasConMouse;
+}
+function moverBola(bola) {
+    const fuerzaX = (Math.random() - 0.5) * 0.3;
+    const fuerzaY = (Math.random() - 0.5) * 0.3;
+    Body.applyForce(bola, bola.position, { x: fuerzaX, y: fuerzaY });
 }
 
 function eliminarTodasLasBolas(world) {

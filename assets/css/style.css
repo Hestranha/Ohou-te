@@ -87,6 +87,7 @@ footer {
 
 #bolas {
     position: relative;
+    user-select: none;
 }
 
 .espacio-bola {
