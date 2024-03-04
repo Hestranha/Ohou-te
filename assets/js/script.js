@@ -368,6 +368,23 @@ function changeIcon1() {
 }
 function comenzar() {
     crearBolas();
+    const bolaMovimiento = document.getElementById("movimiento").checked;
+    bolaResultados = document.getElementById("numResultados").value; // Para detener toda la wea xd
+    const bolaVelocidad = document.getElementById("velocidad").value;
+    const bolaDuracion = document.getElementById("duracion").value * 1000;
+    const bolaSonido = document.getElementById("sonido").checked;
+    if (!bolaMovimiento) {
+        var linea = Bodies.rectangle(600 / 2, 600 / 2 - 100, 600, 10, {
+            isStatic: true,
+            restitution: 1,
+            render: { fillStyle: '#04201e' },
+            //render: { fillStyle: 'red' },
+        });
+        World.add(world, linea);
+        setTimeout(() => {
+            World.remove(world, linea);
+        }, bolaDuracion - 1500);
+    }
     document.querySelector('.g').disabled = true;
     document.querySelector('.cB').disabled = true;
     setTimeout(() => {
@@ -394,12 +411,7 @@ function comenzar() {
         });
 
         //console.log(contenidoOpciones);
-
-        bolaResultados = document.getElementById("numResultados").value; // Para detener toda la wea xd
-        const bolaVelocidad = document.getElementById("velocidad").value;
-        const bolaDuracion = document.getElementById("duracion").value * 1000;
-        const bolaSonido = document.getElementById("sonido").checked;
-
+        /// aqui estaban antes las declaraciones iniciales de esta funcion
         engine.timing.timeScale = 0.35; // Volverlo mas lento cuando gira
         setTimeout(() => {
             engine.timing.timeScale = 1; // Volverlo mas rapido cuando caen
@@ -415,6 +427,11 @@ function comenzar() {
             numV = 0.18;
         } else if (bolaVelocidad == 'rapido') {
             numV = 0.3;
+        }
+        if (!bolaMovimiento) {
+            console.log('se cambia a 0');
+            engine.timing.timeScale = 1;
+            numV = 0;
         }
 
         if (bolaSonido == true) {
@@ -488,18 +505,18 @@ function comenzar() {
                     var elemento = document.querySelector('.zoomResultado');
                     var elemento1 = document.querySelector('.zoomResultado1');
                     elemento.style.transform = 'scale(1.003)';
-                    elemento.style.backgroundColor  = '#04201e';
-                    elemento.style.color  = 'white';
+                    elemento.style.backgroundColor = '#04201e';
+                    elemento.style.color = 'white';
                     elemento1.style.transform = 'scale(1.003)';
-                    elemento1.style.backgroundColor  = '#04201e';
-                    elemento1.style.color  = 'white';
+                    elemento1.style.backgroundColor = '#04201e';
+                    elemento1.style.color = 'white';
                     setTimeout(function () {
                         elemento.style.transform = 'scale(1)';
-                        elemento.style.backgroundColor  = '#3fb19e';
-                        elemento.style.color  = 'black';
+                        elemento.style.backgroundColor = '#3fb19e';
+                        elemento.style.color = 'black';
                         elemento1.style.transform = 'scale(1)';
-                        elemento1.style.backgroundColor  = '#3fb19e';
-                        elemento1.style.color  = 'black';
+                        elemento1.style.backgroundColor = '#3fb19e';
+                        elemento1.style.color = 'black';
                         document.querySelector('.Btn').disabled = false;
                         document.querySelector('.boton2Copiar').disabled = false;
                     }, 1000);
