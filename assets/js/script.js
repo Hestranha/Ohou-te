@@ -205,18 +205,6 @@ function crearBolas() {
                 }
             }
         });
-        /*
-        Events.on(engine, 'collisionStart', (event) => {
-            const pairs = event.pairs;
-            for (const pair of pairs) {
-                const { bodyA, bodyB } = pair;
-                if (bodyA.label === 'Circle Body' && bodyB.label === 'Circle Body') {
-                    // Choque entre dos bolas, reproduce el sonido
-                    playCollisionSound();
-                }
-            }
-        });
-        */
     }
 
     const grosorParedes = 80;
@@ -359,14 +347,15 @@ function changeIcon() {
     var resultTextarea1 = document.getElementById('resultados1');
     resultTextarea1.select();
     document.execCommand('copy');
-    //var texto1Element = document.getElementById('copiado1');
-    //texto1Element.innerText = 'Copiado';
+    var texto1Element = document.getElementById('copiado1');
+    texto1Element.innerText = 'Listo';
     window.getSelection().removeAllRanges();
     var iconContainer = document.getElementById('iconContainer');
-    iconContainer.innerHTML = '<svg fill="white" viewBox="0 0 512 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm124.1 191.1L207.3 380.8c-4.686 4.686-12.28 4.686-16.97 0L131.9 324.9c-4.686-4.686-4.686-12.28 0-16.97 4.686-4.686 12.28-4.686 16.97 0l46.04 46.04 134.5-134.5c4.686-4.686 12.28-4.686 16.97 0 4.686 4.686 4.686 12.28 0 16.97z"></path></svg>';
+    iconContainer.innerHTML = '<svg fill="white" viewBox="0 0 512 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M124.929 391.434l-93.878-93.879c-4.686-4.686-4.686-12.284 0-16.971 4.686-4.686 12.285-4.686 16.971 0l77.907 77.908L409.95 89.378c4.686-4.686 12.285-4.686 16.971 0 4.686 4.686 4.686 12.284 0 16.971L141.9 391.434c-4.686 4.686-12.284 4.686-16.971 0z"></path></svg>';
+
     setTimeout(function () {
         iconContainer.innerHTML = '<svg fill="white" viewBox="0 0 384 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path></svg>';
-        //texto1Element.innerText = 'Copiar';
+        texto1Element.innerText = 'Copiar';
     }, 2500);
 }
 function changeIcon1() {
@@ -407,11 +396,13 @@ function comenzar() {
     setTimeout(() => {
         document.querySelector('.cB').disabled = false;
     }, 2000);
+    ordenBolas = []; // lipiamos
+    contenidoOpciones = []; // lipiamos
+    const contenido = document.getElementById("numBolas").value;
+    //const lineas = contenido.split('\n'); // Separamos por lineas contenido
+    const lineas = contenido.split('\n').filter(linea => linea.trim() !== '');
     setTimeout(() => {
         generarCuadrado();
-
-        ordenBolas = []; // lipiamos
-        contenidoOpciones = []; // lipiamos
         if (window.matchMedia("(max-width: 768px)").matches) {
             const alturaTotal = document.documentElement.scrollHeight;
             window.scrollTo({
@@ -419,8 +410,6 @@ function comenzar() {
                 behavior: 'smooth'
             });
         }
-        const contenido = document.getElementById("numBolas").value; // Obtenemos el contenido de textarea opciones
-        const lineas = contenido.split('\n'); // Separamos por lineas contenido
 
         lineas.forEach((linea, index) => {
             const lineaId = index + 1;
@@ -508,6 +497,10 @@ function comenzar() {
                     } else {
                         console.log("Bolas quedando", bolasEnElMundo.length);
                     }
+                    /*
+                                |_  _  __|_.__.._ |_  _  
+                                | |(/__> |_|(_|| || |(_) 
+                    */
                     //console.log("Num de resultados: ", bolaResultados);
                     //console.log(ordenBolas); // Bolas ordendas
                     ayuda2 = true;
@@ -675,16 +668,3 @@ function applyRandomForce(body, num) {
     const fuerzaY = (Math.random() - 0.5) * num;
     Body.applyForce(body, body.position, { x: fuerzaX, y: fuerzaY });
 }
-/*
-function playCollisionSound() {
-    const collisionSound = new Audio('./audio/colision2.mp3');
-    collisionSound.volume = 0.2;
-    if (collisionSound.paused) {
-        // Iniciar la reproducción
-        collisionSound.play();
-    } else {
-        // Reiniciar la reproducción desde el principio si ya está en reproducción
-        collisionSound.currentTime = 0;
-    }
-}
-*/
